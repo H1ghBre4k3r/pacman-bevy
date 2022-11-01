@@ -11,15 +11,12 @@ jobs:
     continue-on-error: ${{ matrix.experimental || false }}
     strategy:
       matrix:
-        # All generated code should be running on stable now
         rust: [nightly, stable]
         include:
           # Nightly is only for reference and allowed to fail
           - rust: nightly
             experimental: true
         os:
-          # Check compilation works on common OSes
-          # (i.e. no path issues)
           - ubuntu-latest
           - macOS-latest
           - windows-latest
@@ -41,6 +38,9 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - name: Install alsa and udev
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+        if: runner.os == 'linux'     
       - run: cargo test --lib 
   linting:
     name: Linting
