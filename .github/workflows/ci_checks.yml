@@ -28,6 +28,9 @@ jobs:
           profile: minimal
           toolchain: ${{ matrix.rust }}
           override: true
+      - name: Install alsa and udev
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+        if: runner.os == 'linux'     
       - run: cargo build --all
       - run: cargo build --all --release
   testing:
