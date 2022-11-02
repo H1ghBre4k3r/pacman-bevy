@@ -1,77 +1,77 @@
-name: CI Checks
-
-on: [push, pull_request]
-
-env:
-  CARGO_TERM_COLOR: always
-
-jobs:
-  building:
-    name: Building
-    continue-on-error: ${{ matrix.experimental || false }}
-    strategy:
-      matrix:
-        rust: [nightly, stable]
-        include:
-          # Nightly is only for reference and allowed to fail
-          - rust: nightly
-            experimental: true
-        os:
-          - ubuntu-latest
-          - macOS-latest
-          - windows-latest
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: ${{ matrix.rust }}
-          override: true
-      - name: Install alsa and udev
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
-        if: runner.os == 'linux'     
-      - run: cargo build --all
-      - run: cargo build --all --release
-  testing:
-    name: Testing
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - name: Install alsa and udev
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
-        if: runner.os == 'linux'     
-      - run: cargo test 
-  linting:
-    name: Linting
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: clippy
-      - name: Install alsa and udev
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
-        if: runner.os == 'linux'     
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-features -- -D warnings
-  formatting:
-    name: Formatting
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: rustfmt
-      - run: cargo fmt -- --check
+# name: CI Checks
+#
+# on: [push, pull_request]
+#
+# env:
+#   CARGO_TERM_COLOR: always
+#
+# jobs:
+#   building:
+#     name: Building
+#     continue-on-error: ${{ matrix.experimental || false }}
+#     strategy:
+#       matrix:
+#         rust: [nightly, stable]
+#         include:
+#           # Nightly is only for reference and allowed to fail
+#           - rust: nightly
+#             experimental: true
+#         os:
+#           - ubuntu-latest
+#           - macOS-latest
+#           - windows-latest
+#     runs-on: ${{ matrix.os }}
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: actions-rs/toolchain@v1
+#         with:
+#           profile: minimal
+#           toolchain: ${{ matrix.rust }}
+#           override: true
+#       - name: Install alsa and udev
+#         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+#         if: runner.os == 'linux'     
+#       - run: cargo build --all
+#       - run: cargo build --all --release
+#   testing:
+#     name: Testing
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - uses: actions-rs/toolchain@v1
+#         with:
+#           toolchain: stable
+#       - name: Install alsa and udev
+#         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+#         if: runner.os == 'linux'     
+#       - run: cargo test 
+#   linting:
+#     name: Linting
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           submodules: true
+#       - uses: actions-rs/toolchain@v1
+#         with:
+#           toolchain: stable
+#           components: clippy
+#       - name: Install alsa and udev
+#         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+#         if: runner.os == 'linux'     
+#       - uses: actions-rs/clippy-check@v1
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           args: --all-features -- -D warnings
+#   formatting:
+#     name: Formatting
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           submodules: true
+#       - uses: actions-rs/toolchain@v1
+#         with:
+#           toolchain: stable
+#           components: rustfmt
+#       - run: cargo fmt -- --check
