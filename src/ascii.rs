@@ -6,8 +6,10 @@ pub struct AsciiSheet(pub Handle<TextureAtlas>);
 pub enum SpriteIdices {
     PacmanClosed = 0,
     PacmanOpen = 1,
-    WallCorner = 8,
-    WallStraight = 9,
+    WallCorner = 10,
+    WallStraight = 11,
+    SmallCoin = 12,
+    LargeCoin = 13,
 }
 
 impl Into<usize> for SpriteIdices {
@@ -26,9 +28,9 @@ pub fn load_ascii(
     let atlas = TextureAtlas::from_grid_with_padding(
         image,
         Vec2::splat(32.), // 32x32px per sprite
-        3,
         4,
-        Vec2::splat(1.), // 1px padding on EACH side
+        4,
+        Vec2::splat(0.0),
         Vec2::default(),
     );
 

@@ -2,6 +2,8 @@ use std::fs;
 
 use bevy::{prelude::*, sprite::Anchor};
 
+use crate::ascii::{AsciiSheet, SpriteIdices};
+
 pub struct MapPlugin;
 
 /// Plugin for managing the map load and instantiation of tiles.
@@ -81,37 +83,49 @@ impl Tile {
 }
 
 /// Spawn tiles depending on the loaded map.
-fn spawn_tiles(mut commands: Commands, map: Res<Map>) {
+fn spawn_tiles(mut commands: Commands, map: Res<Map>, ascii: Res<AsciiSheet>) {
     let tiles = map.tiles.clone();
 
     for (x, column) in tiles.iter().enumerate() {
         for (y, tile) in column.iter().enumerate() {
             let sprite = match *tile {
-                Tile::Wall => Sprite {
-                    color: Color::rgb(0.0, 0.0, 255.0),
-                    anchor: Anchor::BottomLeft,
-                    ..default()
-                },
-                Tile::Coin => todo!(),
+                Tile::Wall => determine_sprite_for_wall(&tiles, x, y),
+                Tile::Coin => {
+                    let mut sprite = TextureAtlasSprite::new(SpriteIdices::SmallCoin.into());
+                    sprite.custom_size = Some(Vec2::splat(1.0));
+                    sprite.anchor = Anchor::BottomLeft;
+                    sprite
+                }
                 _ => {
                     continue;
                 }
             };
 
-            commands.spawn().insert(*tile).insert_bundle(SpriteBundle {
-                transform: Transform {
-                    translation: Vec3 {
-                        x: x as f32,
-                        y: y as f32,
-                        z: 10.0,
+            commands
+                .spawn()
+                .insert(*tile)
+                .insert_bundle(SpriteSheetBundle {
+                    transform: Transform {
+                        translation: Vec3 {
+                            x: x as f32,
+                            y: y as f32,
+                            z: 1.0,
+                        },
+                        scale: Vec3::new(1.0, 1.0, 0.0),
+                        ..default()
                     },
-
-                    scale: Vec3::new(1.0, 1.0, 0.0),
+                    sprite,
+                    texture_atlas: ascii.0.clone(),
                     ..default()
-                },
-                sprite,
-                ..default()
-            });
+                });
         }
     }
+}
+
+/// Determine the sprites for a wall depending on the sprites around it.
+fn determine_sprite_for_wall(tiles: &Vec<Vec<Tile>>, x: usize, y: usize) -> TextureAtlasSprite {
+    let mut sprite = TextureAtlasSprite::new(SpriteIdices::WallStraight.into());
+    sprite.custom_size = Some(Vec2::splat(1.0));
+    sprite.anchor = Anchor::BottomLeft;
+    sprite
 }
