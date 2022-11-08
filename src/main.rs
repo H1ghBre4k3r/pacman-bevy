@@ -1,11 +1,16 @@
 mod ascii;
+mod map;
 mod player;
+
+use std::fs;
 
 use ascii::load_ascii;
 use bevy::{
     prelude::*,
     render::{camera::ScalingMode, texture::ImageSettings},
 };
+use map::MapPlugin;
+use player::PlayerPlugin;
 
 const CLEAR_COLOR: Color = Color::rgb(0.2, 0.2, 0.2);
 
@@ -30,6 +35,8 @@ fn main() {
         .insert_resource(ImageSettings::default_nearest()) // prevents blurry sprites
         .add_startup_system_to_stage(StartupStage::PreStartup, load_ascii)
         .add_startup_system(spawn_camera)
+        .add_plugin(PlayerPlugin)
+        .add_plugin(MapPlugin)
         .add_plugins(DefaultPlugins)
         .add_system(bevy::window::close_on_esc)
         .run();
