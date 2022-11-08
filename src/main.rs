@@ -2,8 +2,6 @@ mod ascii;
 mod map;
 mod player;
 
-use std::fs;
-
 use ascii::load_ascii;
 use bevy::{
     prelude::*,
