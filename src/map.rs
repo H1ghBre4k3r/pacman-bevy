@@ -1,4 +1,4 @@
-use std::fs;
+use std::{f32::consts::FRAC_PI_2, fs};
 
 use bevy::{prelude::*, sprite::Anchor};
 
@@ -9,20 +9,23 @@ pub struct MapPlugin;
 /// Plugin for managing the map load and instantiation of tiles.
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(Map::from_string("assets/map.txt"))
+        app.insert_resource(TileMap::from_string("assets/map.txt"))
             .add_startup_system(spawn_tiles);
     }
 }
 
 #[derive(Clone)]
-pub struct Map {
-    // TODO: Do we need these two fields?
-    pub columns: usize,
-    pub rows: usize,
-    pub tiles: Vec<Vec<Tile>>,
+pub struct TileMap {
+    _tiles: Vec<Vec<Tile>>,
 }
 
-impl Map {
+impl From<Vec<Vec<Tile>>> for TileMap {
+    fn from(tiles: Vec<Vec<Tile>>) -> Self {
+        Self { _tiles: tiles }
+    }
+}
+
+impl TileMap {
     pub fn from_string(data: &str) -> Self {
         let content = fs::read_to_string(data).expect("Should have been able to read the map");
 
@@ -55,11 +58,11 @@ impl Map {
             );
         }
 
-        Map {
-            columns: columns.len(),
-            tiles: columns,
-            rows,
-        }
+        TileMap::from(columns)
+    }
+
+    pub fn tiles(&self) -> &Vec<Vec<Tile>> {
+        &self._tiles
     }
 }
 
@@ -83,13 +86,16 @@ impl Tile {
 }
 
 /// Spawn tiles depending on the loaded map.
-fn spawn_tiles(mut commands: Commands, map: Res<Map>, ascii: Res<AsciiSheet>) {
-    let tiles = map.tiles.clone();
+fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>) {
+    let tiles = map.tiles();
 
     for (x, column) in tiles.iter().enumerate() {
         for (y, tile) in column.iter().enumerate() {
             let sprite = match *tile {
-                Tile::Wall => determine_sprite_for_wall(&tiles, x, y),
+                Tile::Wall => {
+                    determine_sprites_for_wall(&mut commands, ascii.0.clone(), *tile, &map, x, y);
+                    continue;
+                }
                 Tile::Coin => {
                     let mut sprite = TextureAtlasSprite::new(SpriteIdices::SmallCoin.into());
                     sprite.custom_size = Some(Vec2::splat(1.0));
@@ -123,9 +129,38 @@ fn spawn_tiles(mut commands: Commands, map: Res<Map>, ascii: Res<AsciiSheet>) {
 }
 
 /// Determine the sprites for a wall depending on the sprites around it.
-fn determine_sprite_for_wall(tiles: &Vec<Vec<Tile>>, x: usize, y: usize) -> TextureAtlasSprite {
-    let mut sprite = TextureAtlasSprite::new(SpriteIdices::WallStraight.into());
-    sprite.custom_size = Some(Vec2::splat(1.0));
-    sprite.anchor = Anchor::BottomLeft;
-    sprite
+fn determine_sprites_for_wall(
+    commands: &mut Commands,
+    texture_atlas: Handle<TextureAtlas>,
+    tile: Tile,
+    tiles: &TileMap,
+    x: usize,
+    y: usize,
+) {
+    let mut straight_wall = TextureAtlasSprite::new(SpriteIdices::WallStraight.into());
+    straight_wall.custom_size = Some(Vec2::splat(0.5));
+    straight_wall.anchor = Anchor::BottomLeft;
+
+    let mut corner_wall = TextureAtlasSprite::new(SpriteIdices::WallCorner.into());
+    corner_wall.custom_size = Some(Vec2::splat(0.5));
+    corner_wall.anchor = Anchor::BottomLeft;
+
+    commands
+        .spawn()
+        .insert(tile)
+        .insert_bundle(SpriteSheetBundle {
+            transform: Transform {
+                translation: Vec3 {
+                    x: x as f32,
+                    y: y as f32,
+                    z: 1.0,
+                },
+                scale: Vec3::new(1.0, 1.0, 0.0),
+                rotation: Quat::from_rotation_z(FRAC_PI_2),
+                ..default()
+            },
+            sprite: straight_wall,
+            texture_atlas,
+            ..default()
+        });
 }
