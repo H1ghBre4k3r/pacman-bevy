@@ -64,6 +64,20 @@ impl TileMap {
     pub fn tiles(&self) -> &Vec<Vec<Tile>> {
         &self._tiles
     }
+
+    /// Get the tile at the specified position. If there is no tile or the indices are negative,
+    /// this function returns None.
+    pub fn at(&self, x: i32, y: i32) -> Option<Tile> {
+        if x < 0 || y < 0 {
+            return None;
+        }
+        match self._tiles.get(x as usize) {
+            Some(column) => {
+                return column.get(y as usize).map(|tile| tile.clone());
+            }
+            None => None,
+        }
+    }
 }
 
 /// A tile within the game.
