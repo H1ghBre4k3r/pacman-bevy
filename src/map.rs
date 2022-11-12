@@ -1,4 +1,7 @@
-use std::{f32::consts::FRAC_PI_2, fs};
+use std::{
+    f32::consts::{FRAC_PI_2, PI},
+    fs,
+};
 
 use bevy::{prelude::*, sprite::Anchor};
 
@@ -159,22 +162,66 @@ fn determine_sprites_for_wall(
     corner_wall.custom_size = Some(Vec2::splat(0.5));
     corner_wall.anchor = Anchor::BottomLeft;
 
-    commands
-        .spawn()
-        .insert(tile)
-        .insert_bundle(SpriteSheetBundle {
-            transform: Transform {
-                translation: Vec3 {
-                    x: x as f32,
-                    y: y as f32,
-                    z: 1.0,
-                },
-                scale: Vec3::new(1.0, 1.0, 0.0),
-                rotation: Quat::from_rotation_z(FRAC_PI_2),
-                ..default()
+    commands.spawn().insert_bundle(SpriteSheetBundle {
+        transform: Transform {
+            translation: Vec3 {
+                x: x as f32 + 0.5,
+                y: y as f32,
+                z: 1.0,
             },
-            sprite: straight_wall,
-            texture_atlas,
+            scale: Vec3::new(1.0, 1.0, 0.0),
+            rotation: Quat::from_rotation_z(FRAC_PI_2),
             ..default()
-        });
+        },
+        sprite: corner_wall.clone(),
+        texture_atlas: texture_atlas.clone(),
+        ..default()
+    });
+
+    commands.spawn().insert_bundle(SpriteSheetBundle {
+        transform: Transform {
+            translation: Vec3 {
+                x: x as f32 + 1.0,
+                y: y as f32 + 0.5,
+                z: 1.0,
+            },
+            scale: Vec3::new(1.0, 1.0, 0.0),
+            rotation: Quat::from_rotation_z(PI),
+            ..default()
+        },
+        sprite: corner_wall.clone(),
+        texture_atlas: texture_atlas.clone(),
+        ..default()
+    });
+
+    commands.spawn().insert_bundle(SpriteSheetBundle {
+        transform: Transform {
+            translation: Vec3 {
+                x: x as f32 + 0.5,
+                y: y as f32 + 1.0,
+                z: 1.0,
+            },
+            scale: Vec3::new(1.0, 1.0, 0.0),
+            rotation: Quat::from_rotation_z(-FRAC_PI_2),
+            ..default()
+        },
+        sprite: corner_wall.clone(),
+        texture_atlas: texture_atlas.clone(),
+        ..default()
+    });
+
+    commands.spawn().insert_bundle(SpriteSheetBundle {
+        transform: Transform {
+            translation: Vec3 {
+                x: x as f32,
+                y: y as f32 + 0.5,
+                z: 1.0,
+            },
+            scale: Vec3::new(1.0, 1.0, 0.0),
+            ..default()
+        },
+        sprite: corner_wall.clone(),
+        texture_atlas: texture_atlas.clone(),
+        ..default()
+    });
 }
