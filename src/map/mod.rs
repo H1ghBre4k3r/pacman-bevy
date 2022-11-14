@@ -28,7 +28,7 @@ fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>
         for (y, tile) in column.iter().enumerate() {
             let sprite = match *tile {
                 Tile::Wall => {
-                    determine_sprites_for_wall(
+                    spawn_sprites_for_wall(
                         &mut commands,
                         ascii.0.clone(),
                         *tile,
@@ -77,7 +77,7 @@ const GENERAL_OFFSET: Vec3 = Vec3 {
 struct WallBundle;
 
 /// Determine the sprites for a wall depending on the sprites around it.
-fn determine_sprites_for_wall(
+fn spawn_sprites_for_wall(
     commands: &mut Commands,
     texture_atlas: Handle<TextureAtlas>,
     tile: Tile,
@@ -105,6 +105,7 @@ fn determine_sprites_for_wall(
             ..default()
         })
         .with_children(|parent| {
+            // top left
             if let Some((sprite_index, rotation)) = determine_sprite_for_wall_part(
                 tiles.at(x - 1, y),
                 tiles.at(x - 1, y + 1),
@@ -115,7 +116,6 @@ fn determine_sprites_for_wall(
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
-                // top left
                 parent.spawn(SpriteSheetBundle {
                     sprite,
                     texture_atlas: texture_atlas.clone(),
@@ -133,6 +133,7 @@ fn determine_sprites_for_wall(
                 });
             }
 
+            // top right
             if let Some((sprite_index, rotation)) = determine_sprite_for_wall_part(
                 tiles.at(x, y + 1),
                 tiles.at(x + 1, y + 1),
@@ -143,7 +144,6 @@ fn determine_sprites_for_wall(
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
-                // top right
                 parent.spawn(SpriteSheetBundle {
                     sprite,
                     texture_atlas: texture_atlas.clone(),
@@ -161,6 +161,7 @@ fn determine_sprites_for_wall(
                 });
             }
 
+            // bottom right
             if let Some((sprite_index, rotation)) = determine_sprite_for_wall_part(
                 tiles.at(x + 1, y),
                 tiles.at(x + 1, y - 1),
@@ -171,7 +172,6 @@ fn determine_sprites_for_wall(
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
-                // bottom right
                 parent.spawn(SpriteSheetBundle {
                     sprite,
                     texture_atlas: texture_atlas.clone(),
@@ -189,6 +189,7 @@ fn determine_sprites_for_wall(
                 });
             }
 
+            // bottom left
             if let Some((sprite_index, rotation)) = determine_sprite_for_wall_part(
                 tiles.at(x, y - 1),
                 tiles.at(x - 1, y - 1),
@@ -199,7 +200,6 @@ fn determine_sprites_for_wall(
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
-                // bottom left
                 parent.spawn(SpriteSheetBundle {
                     sprite,
                     texture_atlas: texture_atlas.clone(),
