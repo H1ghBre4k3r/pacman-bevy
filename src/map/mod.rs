@@ -73,9 +73,6 @@ const GENERAL_OFFSET: Vec3 = Vec3 {
     z: 0.0,
 };
 
-#[derive(Component)]
-struct WallBundle;
-
 /// Determine the sprites for a wall depending on the sprites around it.
 fn spawn_sprites_for_wall(
     commands: &mut Commands,
