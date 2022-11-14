@@ -272,10 +272,6 @@ fn determine_sprite_for_wall_part(
                 Some(Tile::Wall) => None,
                 Some(_) => Some((SpriteIndices::WallStraight, FRAC_PI_2)),
                 None => None,
-                _ => {
-                    warn!("{one:?} {two:?} {three:?} not yet implemented!");
-                    None
-                }
             },
             _ => {
                 warn!("{one:?} {two:?} {three:?} not yet implemented!");
