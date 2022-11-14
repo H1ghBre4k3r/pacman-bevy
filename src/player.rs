@@ -1,6 +1,6 @@
 use bevy::{prelude::*, sprite::Anchor};
 
-use crate::ascii::{AsciiSheet, SpriteIdices};
+use crate::ascii::{AsciiSheet, SpriteIndices};
 
 pub struct PlayerPlugin;
 
@@ -14,7 +14,7 @@ impl Plugin for PlayerPlugin {
 struct Pacman;
 
 fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {
-    let mut sprite = TextureAtlasSprite::new(SpriteIdices::PacmanOpen.into());
+    let mut sprite = TextureAtlasSprite::new(SpriteIndices::PacmanOpen.into());
     sprite.custom_size = Some(Vec2::splat(1.));
     sprite.anchor = Anchor::BottomLeft;
 

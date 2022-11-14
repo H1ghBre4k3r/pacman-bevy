@@ -4,7 +4,8 @@ use bevy::prelude::*;
 pub struct AsciiSheet(pub Handle<TextureAtlas>);
 
 /// A struct representing the indices of the sprites on the sprite sheet.
-pub enum SpriteIdices {
+#[derive(Debug, PartialEq, Eq)]
+pub enum SpriteIndices {
     PacmanClosed = 0,
     PacmanOpen = 1,
     WallCorner = 10,
@@ -13,7 +14,7 @@ pub enum SpriteIdices {
     LargeCoin = 13,
 }
 
-impl Into<usize> for SpriteIdices {
+impl Into<usize> for SpriteIndices {
     fn into(self) -> usize {
         self as usize
     }
