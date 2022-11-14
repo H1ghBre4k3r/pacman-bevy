@@ -14,7 +14,9 @@ impl Tile {
             ' ' => Self::Empty,
             '#' => Self::Wall,
             '.' => Self::Coin,
-            _ => unreachable!(),
+            _ => {
+                unimplemented!("Tile::from_char('{character}') not implemented yet!")
+            }
         }
     }
 }
