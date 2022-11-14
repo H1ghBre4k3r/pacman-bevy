@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+#[derive(Resource)]
 pub struct AsciiSheet(pub Handle<TextureAtlas>);
 
 /// A struct representing the indices of the sprites on the sprite sheet.
@@ -25,13 +26,13 @@ pub fn load_ascii(
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
     let image = assets.load("ascii.png");
-    let atlas = TextureAtlas::from_grid_with_padding(
+    let atlas = TextureAtlas::from_grid(
         image,
         Vec2::splat(32.), // 32x32px per sprite
         4,
         4,
-        Vec2::splat(0.0),
-        Vec2::default(),
+        Some(Vec2::splat(0.0)),
+        Some(Vec2::default()),
     );
 
     let atlas_handle = texture_atlases.add(atlas);

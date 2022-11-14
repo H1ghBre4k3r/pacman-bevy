@@ -3,10 +3,7 @@ mod map;
 mod player;
 
 use ascii::load_ascii;
-use bevy::{
-    prelude::*,
-    render::{camera::ScalingMode, texture::ImageSettings},
-};
+use bevy::{prelude::*, render::camera::ScalingMode};
 use map::MapPlugin;
 use player::PlayerPlugin;
 
@@ -22,20 +19,25 @@ const SCREEN_HEIGHT: f32 = TILE_SIZE * ROWS as f32;
 
 fn main() {
     App::new()
-        .insert_resource(WindowDescriptor {
-            width: SCREEN_WIDTH,
-            height: SCREEN_HEIGHT,
-            title: "Pacman Bevy".to_string(),
-            resizable: false,
-            ..default()
-        })
         .insert_resource(ClearColor(CLEAR_COLOR))
-        .insert_resource(ImageSettings::default_nearest()) // prevents blurry sprites
         .add_startup_system_to_stage(StartupStage::PreStartup, load_ascii)
         .add_startup_system(spawn_camera)
         .add_plugin(PlayerPlugin)
         .add_plugin(MapPlugin)
-        .add_plugins(DefaultPlugins)
+        .add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    window: WindowDescriptor {
+                        width: SCREEN_WIDTH,
+                        height: SCREEN_HEIGHT,
+                        title: "Pacman Bevy".to_string(),
+                        resizable: false,
+                        ..default()
+                    },
+                    ..default()
+                })
+                .set(ImagePlugin::default_nearest()),
+        )
         .add_system(bevy::window::close_on_esc)
         .run();
 }
@@ -52,5 +54,5 @@ fn spawn_camera(mut commands: Commands) {
     camera.projection.right = COLUMS as f32;
     camera.projection.left = 0.0;
 
-    commands.spawn_bundle(camera);
+    commands.spawn(camera);
 }

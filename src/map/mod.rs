@@ -4,10 +4,7 @@ mod tilemap;
 pub use tile::*;
 pub use tilemap::*;
 
-use std::{
-    f32::consts::{FRAC_PI_2, PI},
-    fs,
-};
+use std::f32::consts::{FRAC_PI_2, PI};
 
 use bevy::{prelude::*, sprite::Anchor};
 
@@ -25,9 +22,9 @@ impl Plugin for MapPlugin {
 
 /// Spawn tiles depending on the loaded map.
 fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>) {
-    let tiles = map.tiles();
+    let columns = map.columns();
 
-    for (x, column) in tiles.iter().enumerate() {
+    for (x, column) in columns.enumerate() {
         for (y, tile) in column.iter().enumerate() {
             let sprite = match *tile {
                 Tile::Wall => {
@@ -45,23 +42,20 @@ fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>
                 }
             };
 
-            commands
-                .spawn()
-                .insert(*tile)
-                .insert_bundle(SpriteSheetBundle {
-                    transform: Transform {
-                        translation: Vec3 {
-                            x: x as f32,
-                            y: y as f32,
-                            z: 1.0,
-                        },
-                        scale: Vec3::new(1.0, 1.0, 0.0),
-                        ..default()
+            commands.spawn(*tile).insert(SpriteSheetBundle {
+                transform: Transform {
+                    translation: Vec3 {
+                        x: x as f32,
+                        y: y as f32,
+                        z: 1.0,
                     },
-                    sprite,
-                    texture_atlas: ascii.0.clone(),
+                    scale: Vec3::new(1.0, 1.0, 0.0),
                     ..default()
-                });
+                },
+                sprite,
+                texture_atlas: ascii.0.clone(),
+                ..default()
+            });
         }
     }
 }
@@ -83,7 +77,7 @@ fn determine_sprites_for_wall(
     corner_wall.custom_size = Some(Vec2::splat(0.5));
     corner_wall.anchor = Anchor::BottomLeft;
 
-    commands.spawn().insert_bundle(SpriteSheetBundle {
+    commands.spawn(SpriteSheetBundle {
         transform: Transform {
             translation: Vec3 {
                 x: x as f32 + 0.5,
@@ -99,7 +93,7 @@ fn determine_sprites_for_wall(
         ..default()
     });
 
-    commands.spawn().insert_bundle(SpriteSheetBundle {
+    commands.spawn(SpriteSheetBundle {
         transform: Transform {
             translation: Vec3 {
                 x: x as f32 + 1.0,
@@ -115,7 +109,7 @@ fn determine_sprites_for_wall(
         ..default()
     });
 
-    commands.spawn().insert_bundle(SpriteSheetBundle {
+    commands.spawn(SpriteSheetBundle {
         transform: Transform {
             translation: Vec3 {
                 x: x as f32 + 0.5,
@@ -131,7 +125,7 @@ fn determine_sprites_for_wall(
         ..default()
     });
 
-    commands.spawn().insert_bundle(SpriteSheetBundle {
+    commands.spawn(SpriteSheetBundle {
         transform: Transform {
             translation: Vec3 {
                 x: x as f32,

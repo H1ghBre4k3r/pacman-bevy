@@ -1,11 +1,15 @@
 use std::fs;
 
+use bevy::prelude::*;
+
 use super::Tile;
 
+pub type Column = Vec<Tile>;
+
 /// A map representing all tiles present on the map.
-#[derive(Clone)]
+#[derive(Resource, Clone)]
 pub struct TileMap {
-    _tiles: Vec<Vec<Tile>>,
+    _tiles: Vec<Column>,
 }
 
 impl From<Vec<Vec<Tile>>> for TileMap {
@@ -50,8 +54,8 @@ impl TileMap {
         TileMap::from(columns)
     }
 
-    pub fn tiles(&self) -> &Vec<Vec<Tile>> {
-        &self._tiles
+    pub fn columns(&self) -> std::slice::Iter<Column> {
+        self._tiles.iter()
     }
 
     /// Get the tile at the specified position. If there is no tile or the indices are negative,
