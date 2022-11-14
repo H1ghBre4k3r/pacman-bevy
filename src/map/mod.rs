@@ -66,6 +66,9 @@ const GENERAL_OFFSET: Vec3 = Vec3 {
     z: 0.0,
 };
 
+#[derive(Component)]
+struct WallBundle;
+
 /// Determine the sprites for a wall depending on the sprites around it.
 fn determine_sprites_for_wall(
     commands: &mut Commands,
@@ -81,70 +84,84 @@ fn determine_sprites_for_wall(
     let mut corner_wall = TextureAtlasSprite::new(SpriteIdices::WallCorner.into());
     corner_wall.custom_size = Some(Vec2::splat(0.5));
 
-    // bottom left
-    commands.spawn(SpriteSheetBundle {
-        transform: Transform {
-            translation: Vec3 {
-                x: x as f32,
-                y: y as f32,
-                z: 1.0,
-            } + GENERAL_OFFSET,
-            scale: Vec3::new(1.0, 1.0, 0.0),
-            rotation: Quat::from_rotation_z(FRAC_PI_2),
+    commands
+        .spawn(WallBundle)
+        .insert(SpriteSheetBundle {
+            transform: Transform {
+                translation: Vec3 {
+                    x: x as f32,
+                    y: y as f32,
+                    z: 1.0,
+                } + GENERAL_OFFSET,
+                ..default()
+            },
             ..default()
-        },
-        sprite: corner_wall.clone(),
-        texture_atlas: texture_atlas.clone(),
-        ..default()
-    });
+        })
+        .with_children(|parent| {
+            // top left
+            parent.spawn(SpriteSheetBundle {
+                transform: Transform {
+                    translation: Vec3 {
+                        y: 0.5,
+                        z: 1.0,
+                        ..default()
+                    },
+                    scale: Vec3::new(1.0, 1.0, 0.0),
+                    ..default()
+                },
+                sprite: corner_wall.clone(),
+                texture_atlas: texture_atlas.clone(),
+                ..default()
+            });
 
-    // bottom right
-    commands.spawn(SpriteSheetBundle {
-        transform: Transform {
-            translation: Vec3 {
-                x: x as f32 + 0.5,
-                y: y as f32,
-                z: 1.0,
-            } + GENERAL_OFFSET,
-            scale: Vec3::new(1.0, 1.0, 0.0),
-            rotation: Quat::from_rotation_z(PI),
-            ..default()
-        },
-        sprite: corner_wall.clone(),
-        texture_atlas: texture_atlas.clone(),
-        ..default()
-    });
+            // top right
+            parent.spawn(SpriteSheetBundle {
+                transform: Transform {
+                    translation: Vec3 {
+                        x: 0.5,
+                        y: 0.5,
+                        z: 1.0,
+                    },
+                    scale: Vec3::new(1.0, 1.0, 0.0),
+                    rotation: Quat::from_rotation_z(-FRAC_PI_2),
+                    ..default()
+                },
+                sprite: corner_wall.clone(),
+                texture_atlas: texture_atlas.clone(),
+                ..default()
+            });
 
-    // top right
-    commands.spawn(SpriteSheetBundle {
-        transform: Transform {
-            translation: Vec3 {
-                x: x as f32 + 0.5,
-                y: y as f32 + 0.5,
-                z: 1.0,
-            } + GENERAL_OFFSET,
-            scale: Vec3::new(1.0, 1.0, 0.0),
-            rotation: Quat::from_rotation_z(-FRAC_PI_2),
-            ..default()
-        },
-        sprite: corner_wall.clone(),
-        texture_atlas: texture_atlas.clone(),
-        ..default()
-    });
+            // bottom right
+            parent.spawn(SpriteSheetBundle {
+                transform: Transform {
+                    translation: Vec3 {
+                        x: 0.5,
+                        z: 1.0,
+                        ..default()
+                    },
+                    scale: Vec3::new(1.0, 1.0, 0.0),
+                    rotation: Quat::from_rotation_z(PI),
+                    ..default()
+                },
+                sprite: corner_wall.clone(),
+                texture_atlas: texture_atlas.clone(),
+                ..default()
+            });
 
-    // top left
-    commands.spawn(SpriteSheetBundle {
-        transform: Transform {
-            translation: Vec3 {
-                x: x as f32,
-                y: y as f32 + 0.5,
-                z: 1.0,
-            } + GENERAL_OFFSET,
-            scale: Vec3::new(1.0, 1.0, 0.0),
-            ..default()
-        },
-        sprite: corner_wall.clone(),
-        texture_atlas: texture_atlas.clone(),
-        ..default()
-    });
+            // bottom left
+            parent.spawn(SpriteSheetBundle {
+                transform: Transform {
+                    translation: Vec3 {
+                        z: 1.0,
+                        ..default()
+                    },
+                    scale: Vec3::new(1.0, 1.0, 0.0),
+                    rotation: Quat::from_rotation_z(FRAC_PI_2),
+                    ..default()
+                },
+                sprite: corner_wall.clone(),
+                texture_atlas: texture_atlas.clone(),
+                ..default()
+            });
+        });
 }
