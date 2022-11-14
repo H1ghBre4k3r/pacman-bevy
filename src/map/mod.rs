@@ -60,6 +60,12 @@ fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>
     }
 }
 
+const GENERAL_OFFSET: Vec3 = Vec3 {
+    x: 0.25,
+    y: 0.25,
+    z: 0.0,
+};
+
 /// Determine the sprites for a wall depending on the sprites around it.
 fn determine_sprites_for_wall(
     commands: &mut Commands,
@@ -71,19 +77,18 @@ fn determine_sprites_for_wall(
 ) {
     let mut straight_wall = TextureAtlasSprite::new(SpriteIdices::WallStraight.into());
     straight_wall.custom_size = Some(Vec2::splat(0.5));
-    straight_wall.anchor = Anchor::BottomLeft;
 
     let mut corner_wall = TextureAtlasSprite::new(SpriteIdices::WallCorner.into());
     corner_wall.custom_size = Some(Vec2::splat(0.5));
-    corner_wall.anchor = Anchor::BottomLeft;
 
+    // bottom left
     commands.spawn(SpriteSheetBundle {
         transform: Transform {
             translation: Vec3 {
-                x: x as f32 + 0.5,
+                x: x as f32,
                 y: y as f32,
                 z: 1.0,
-            },
+            } + GENERAL_OFFSET,
             scale: Vec3::new(1.0, 1.0, 0.0),
             rotation: Quat::from_rotation_z(FRAC_PI_2),
             ..default()
@@ -93,13 +98,14 @@ fn determine_sprites_for_wall(
         ..default()
     });
 
+    // bottom right
     commands.spawn(SpriteSheetBundle {
         transform: Transform {
             translation: Vec3 {
-                x: x as f32 + 1.0,
-                y: y as f32 + 0.5,
+                x: x as f32 + 0.5,
+                y: y as f32,
                 z: 1.0,
-            },
+            } + GENERAL_OFFSET,
             scale: Vec3::new(1.0, 1.0, 0.0),
             rotation: Quat::from_rotation_z(PI),
             ..default()
@@ -109,13 +115,14 @@ fn determine_sprites_for_wall(
         ..default()
     });
 
+    // top right
     commands.spawn(SpriteSheetBundle {
         transform: Transform {
             translation: Vec3 {
                 x: x as f32 + 0.5,
-                y: y as f32 + 1.0,
+                y: y as f32 + 0.5,
                 z: 1.0,
-            },
+            } + GENERAL_OFFSET,
             scale: Vec3::new(1.0, 1.0, 0.0),
             rotation: Quat::from_rotation_z(-FRAC_PI_2),
             ..default()
@@ -125,13 +132,14 @@ fn determine_sprites_for_wall(
         ..default()
     });
 
+    // top left
     commands.spawn(SpriteSheetBundle {
         transform: Transform {
             translation: Vec3 {
                 x: x as f32,
                 y: y as f32 + 0.5,
                 z: 1.0,
-            },
+            } + GENERAL_OFFSET,
             scale: Vec3::new(1.0, 1.0, 0.0),
             ..default()
         },
