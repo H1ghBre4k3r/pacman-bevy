@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 /// A tile within the game.
-#[derive(Component, Clone, Copy)]
+#[derive(Component, Debug, Clone, Copy)]
 pub enum Tile {
     Empty,
     Wall,

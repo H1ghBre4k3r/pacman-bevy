@@ -28,7 +28,14 @@ fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>
         for (y, tile) in column.iter().enumerate() {
             let sprite = match *tile {
                 Tile::Wall => {
-                    determine_sprites_for_wall(&mut commands, ascii.0.clone(), *tile, &map, x, y);
+                    determine_sprites_for_wall(
+                        &mut commands,
+                        ascii.0.clone(),
+                        *tile,
+                        &map,
+                        x as i32,
+                        y as i32,
+                    );
                     continue;
                 }
                 Tile::Coin => {
@@ -75,8 +82,8 @@ fn determine_sprites_for_wall(
     texture_atlas: Handle<TextureAtlas>,
     tile: Tile,
     tiles: &TileMap,
-    x: usize,
-    y: usize,
+    x: i32,
+    y: i32,
 ) {
     let mut straight_wall = TextureAtlasSprite::new(SpriteIndices::WallStraight.into());
     straight_wall.custom_size = Some(Vec2::splat(0.5));
@@ -85,7 +92,7 @@ fn determine_sprites_for_wall(
     corner_wall.custom_size = Some(Vec2::splat(0.5));
 
     commands
-        .spawn(WallBundle)
+        .spawn(tile)
         .insert(SpriteSheetBundle {
             transform: Transform {
                 translation: Vec3 {
@@ -98,71 +105,116 @@ fn determine_sprites_for_wall(
             ..default()
         })
         .with_children(|parent| {
-            // top left
-            parent.spawn(SpriteSheetBundle {
-                transform: Transform {
-                    translation: Vec3 {
-                        y: 0.5,
-                        z: 1.0,
+            if let Some((sprite_index, rotation)) = determine_sprite_for_wall_part(
+                tiles.at(x - 1, y),
+                tiles.at(x - 1, y + 1),
+                tiles.at(x, y + 1),
+            ) {
+                let sprite = TextureAtlasSprite {
+                    index: sprite_index.into(),
+                    custom_size: Some(Vec2::splat(0.5)),
+                    ..default()
+                };
+                // top left
+                parent.spawn(SpriteSheetBundle {
+                    sprite,
+                    texture_atlas: texture_atlas.clone(),
+                    transform: Transform {
+                        translation: Vec3 {
+                            y: 0.5,
+                            z: 1.0,
+                            ..default()
+                        },
+                        scale: Vec3::new(1.0, 1.0, 0.0),
+                        rotation: Quat::from_rotation_z(rotation),
                         ..default()
                     },
-                    scale: Vec3::new(1.0, 1.0, 0.0),
                     ..default()
-                },
-                sprite: corner_wall.clone(),
-                texture_atlas: texture_atlas.clone(),
-                ..default()
-            });
+                });
+            }
 
-            // top right
-            parent.spawn(SpriteSheetBundle {
-                transform: Transform {
-                    translation: Vec3 {
-                        x: 0.5,
-                        y: 0.5,
-                        z: 1.0,
-                    },
-                    scale: Vec3::new(1.0, 1.0, 0.0),
-                    rotation: Quat::from_rotation_z(-FRAC_PI_2),
+            if let Some((sprite_index, rotation)) = determine_sprite_for_wall_part(
+                tiles.at(x, y + 1),
+                tiles.at(x + 1, y + 1),
+                tiles.at(x + 1, y),
+            ) {
+                let sprite = TextureAtlasSprite {
+                    index: sprite_index.into(),
+                    custom_size: Some(Vec2::splat(0.5)),
                     ..default()
-                },
-                sprite: corner_wall.clone(),
-                texture_atlas: texture_atlas.clone(),
-                ..default()
-            });
-
-            // bottom right
-            parent.spawn(SpriteSheetBundle {
-                transform: Transform {
-                    translation: Vec3 {
-                        x: 0.5,
-                        z: 1.0,
+                };
+                // top right
+                parent.spawn(SpriteSheetBundle {
+                    sprite,
+                    texture_atlas: texture_atlas.clone(),
+                    transform: Transform {
+                        translation: Vec3 {
+                            x: 0.5,
+                            y: 0.5,
+                            z: 1.0,
+                        },
+                        scale: Vec3::new(1.0, 1.0, 0.0),
+                        rotation: Quat::from_rotation_z(-FRAC_PI_2 + rotation),
                         ..default()
                     },
-                    scale: Vec3::new(1.0, 1.0, 0.0),
-                    rotation: Quat::from_rotation_z(PI),
                     ..default()
-                },
-                sprite: corner_wall.clone(),
-                texture_atlas: texture_atlas.clone(),
-                ..default()
-            });
+                });
+            }
 
-            // bottom left
-            parent.spawn(SpriteSheetBundle {
-                transform: Transform {
-                    translation: Vec3 {
-                        z: 1.0,
+            if let Some((sprite_index, rotation)) = determine_sprite_for_wall_part(
+                tiles.at(x + 1, y),
+                tiles.at(x + 1, y - 1),
+                tiles.at(x, y - 1),
+            ) {
+                let sprite = TextureAtlasSprite {
+                    index: sprite_index.into(),
+                    custom_size: Some(Vec2::splat(0.5)),
+                    ..default()
+                };
+                // bottom right
+                parent.spawn(SpriteSheetBundle {
+                    sprite,
+                    texture_atlas: texture_atlas.clone(),
+                    transform: Transform {
+                        translation: Vec3 {
+                            x: 0.5,
+                            z: 1.0,
+                            ..default()
+                        },
+                        scale: Vec3::new(1.0, 1.0, 0.0),
+                        rotation: Quat::from_rotation_z(PI + rotation),
                         ..default()
                     },
-                    scale: Vec3::new(1.0, 1.0, 0.0),
-                    rotation: Quat::from_rotation_z(FRAC_PI_2) + Quat::from_rotation_z(FRAC_PI_2),
                     ..default()
-                },
-                sprite: corner_wall.clone(),
-                texture_atlas: texture_atlas.clone(),
-                ..default()
-            });
+                });
+            }
+
+            if let Some((sprite_index, rotation)) = determine_sprite_for_wall_part(
+                tiles.at(x, y - 1),
+                tiles.at(x - 1, y - 1),
+                tiles.at(x - 1, y),
+            ) {
+                let sprite = TextureAtlasSprite {
+                    index: sprite_index.into(),
+                    custom_size: Some(Vec2::splat(0.5)),
+                    ..default()
+                };
+                // bottom left
+                parent.spawn(SpriteSheetBundle {
+                    sprite,
+                    texture_atlas: texture_atlas.clone(),
+                    transform: Transform {
+                        translation: Vec3 {
+                            z: 1.0,
+                            ..default()
+                        },
+                        scale: Vec3::new(1.0, 1.0, 0.0),
+                        rotation: Quat::from_rotation_z(FRAC_PI_2 + rotation),
+                        ..default()
+                    },
+                    ..default()
+                });
+            }
         });
 }
 
@@ -176,32 +228,54 @@ fn determine_sprite_for_wall_part(
             Some(Tile::Wall) => match three {
                 Some(Tile::Wall) => None,
                 Some(_) => Some((SpriteIndices::WallStraight, FRAC_PI_2)),
-                _ => todo!(),
+                _ => {
+                    warn!("{one:?} {two:?} {three:?} not yet implemented!");
+                    None
+                }
             },
             Some(_) => match three {
                 Some(Tile::Wall) => Some((SpriteIndices::WallCorner, PI)),
                 Some(_) => Some((SpriteIndices::WallStraight, FRAC_PI_2)),
-                _ => todo!(),
+                _ => {
+                    warn!("{one:?} {two:?} {three:?} not yet implemented!");
+                    None
+                }
             },
-            _ => todo!(),
+            _ => {
+                warn!("{one:?} {two:?} {three:?} not yet implemented!");
+                None
+            }
         },
         Some(_) => match two {
             Some(Tile::Wall) => match three {
                 Some(Tile::Wall) => Some((SpriteIndices::WallStraight, 0.0)),
                 Some(_) => Some((SpriteIndices::WallCorner, 0.0)),
-                _ => todo!(),
+                _ => {
+                    warn!("{one:?} {two:?} {three:?} not yet implemented!");
+                    None
+                }
             },
             Some(_) => match three {
                 Some(Tile::Wall) => Some((SpriteIndices::WallStraight, 0.0)),
                 Some(_) => Some((SpriteIndices::WallCorner, 0.0)),
-                _ => todo!(),
+                _ => {
+                    warn!("{one:?} {two:?} {three:?} not yet implemented!");
+                    None
+                }
             },
-            _ => todo!(),
+            _ => {
+                warn!("{one:?} {two:?} {three:?} not yet implemented!");
+                None
+            }
         },
-        _ => todo!(),
+        _ => {
+            warn!("{one:?} {two:?} {three:?} not yet implemented!");
+            None
+        }
     }
 }
 
+#[cfg(test)]
 mod tests {
     use std::f32::consts::{FRAC_PI_2, PI};
 

@@ -20,7 +20,7 @@ fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {
 
     commands.spawn(Pacman).insert(SpriteSheetBundle {
         transform: Transform {
-            translation: Vec3::new(1.0, 1.0, 1.0),
+            translation: Vec3::new(1.0, 1.0, 10.0),
             scale: Vec3::new(1.0, 1.0, 0.0),
             ..default()
         },

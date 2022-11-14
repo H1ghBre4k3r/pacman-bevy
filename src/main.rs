@@ -11,8 +11,8 @@ const CLEAR_COLOR: Color = Color::rgb(0.2, 0.2, 0.2);
 
 const TILE_SIZE: f32 = 40.0;
 
-const COLUMS: u32 = 32;
-const ROWS: u32 = 18;
+const COLUMS: u32 = 19;
+const ROWS: u32 = 22;
 
 const SCREEN_WIDTH: f32 = TILE_SIZE * COLUMS as f32;
 const SCREEN_HEIGHT: f32 = TILE_SIZE * ROWS as f32;
