@@ -263,15 +263,25 @@ fn determine_sprite_for_wall_part(
                     None
                 }
             },
+            None => match three {
+                _ => Some((SpriteIndices::WallStraight, 0.0)),
+            },
+        },
+        None => match two {
+            None => match three {
+                Some(Tile::Wall) => None,
+                Some(_) => Some((SpriteIndices::WallStraight, FRAC_PI_2)),
+                None => None,
+                _ => {
+                    warn!("{one:?} {two:?} {three:?} not yet implemented!");
+                    None
+                }
+            },
             _ => {
                 warn!("{one:?} {two:?} {three:?} not yet implemented!");
                 None
             }
         },
-        _ => {
-            warn!("{one:?} {two:?} {three:?} not yet implemented!");
-            None
-        }
     }
 }
 
@@ -332,6 +342,30 @@ mod tests {
         assert_eq!(
             determine_sprite_for_wall_part(Some(Tile::Wall), Some(Tile::Empty), Some(Tile::Wall)),
             Some((SpriteIndices::WallCorner, PI))
+        );
+    }
+
+    #[test]
+    fn test_left_empty() {
+        assert_eq!(
+            determine_sprite_for_wall_part(None, None, Some(Tile::Empty)),
+            Some((SpriteIndices::WallStraight, FRAC_PI_2))
+        );
+        assert_eq!(
+            determine_sprite_for_wall_part(None, None, Some(Tile::Wall)),
+            None
+        );
+    }
+
+    #[test]
+    fn test_top_empty() {
+        assert_eq!(
+            determine_sprite_for_wall_part(Some(Tile::Empty), None, None),
+            Some((SpriteIndices::WallStraight, 0.0))
+        );
+        assert_eq!(
+            determine_sprite_for_wall_part(Some(Tile::Wall), None, None),
+            None
         );
     }
 }
