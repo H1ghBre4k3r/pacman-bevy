@@ -2,8 +2,9 @@ use bevy::{prelude::*, time::FixedTimestep};
 
 use crate::player::{DirectionWrapper, Pacman};
 
-const TICK_TIME: f64 = 1.0 / 3.0;
+const TICK_TIME: f64 = 1.0 / 2.0;
 
+/// Plugin for managing the game loop of the game
 pub struct GameLoop;
 
 impl Plugin for GameLoop {
