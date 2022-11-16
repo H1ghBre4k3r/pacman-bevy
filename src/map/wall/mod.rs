@@ -16,10 +16,10 @@ const GENERAL_OFFSET: Vec3 = Vec3 {
     z: 0.0,
 };
 
-/// Component representing a wall part on the map.
+/// Component representing a wall tile on the map.
 /// It has (or at least should have) 4 children (one for each corner).
 #[derive(Component)]
-pub struct WallBundle;
+pub struct WallTile;
 
 /// Determine the sprites for a wall depending on the sprites around it.
 pub fn spawn_sprites_for_wall(
@@ -36,7 +36,7 @@ pub fn spawn_sprites_for_wall(
     corner_wall.custom_size = Some(Vec2::splat(0.5));
 
     commands
-        .spawn(WallBundle)
+        .spawn(WallTile)
         .insert(SpriteSheetBundle {
             transform: Transform {
                 translation: Vec3 {
