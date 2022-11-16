@@ -1,14 +1,16 @@
+mod coin;
 mod tile;
 mod tilemap;
 mod wall;
 
+pub use coin::*;
 pub use tile::*;
 pub use tilemap::*;
 pub use wall::*;
 
-use bevy::{prelude::*, sprite::Anchor};
+use bevy::prelude::*;
 
-use crate::ascii::{AsciiSheet, SpriteIndices};
+use crate::ascii::AsciiSheet;
 
 pub struct MapPlugin;
 
@@ -26,7 +28,7 @@ fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>
 
     for (x, column) in columns.enumerate() {
         for (y, tile) in column.iter().enumerate() {
-            let sprite = match *tile {
+            match *tile {
                 Tile::Wall => {
                     spawn_sprites_for_wall(
                         &mut commands,
@@ -37,31 +39,11 @@ fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>
                     );
                     continue;
                 }
-                Tile::Coin => {
-                    let mut sprite = TextureAtlasSprite::new(SpriteIndices::SmallCoin.into());
-                    sprite.custom_size = Some(Vec2::splat(1.0));
-                    sprite.anchor = Anchor::BottomLeft;
-                    sprite
-                }
+                Tile::Coin => spawn_coin(&mut commands, ascii.0.clone(), x as i32, y as i32),
                 _ => {
                     continue;
                 }
             };
-
-            commands.spawn(*tile).insert(SpriteSheetBundle {
-                transform: Transform {
-                    translation: Vec3 {
-                        x: x as f32,
-                        y: y as f32,
-                        z: 1.0,
-                    },
-                    scale: Vec3::new(1.0, 1.0, 0.0),
-                    ..default()
-                },
-                sprite,
-                texture_atlas: ascii.0.clone(),
-                ..default()
-            });
         }
     }
 }
