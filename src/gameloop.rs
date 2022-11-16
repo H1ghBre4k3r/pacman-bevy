@@ -1,7 +1,7 @@
 use bevy::{prelude::*, time::FixedTimestep};
 
 use crate::{
-    map::{WallPart, WallTile},
+    map::WallTile,
     player::{DirectionWrapper, Pacman},
     view::{COLUMNS, ROWS},
 };
