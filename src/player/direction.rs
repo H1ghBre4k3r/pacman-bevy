@@ -22,7 +22,7 @@ pub struct DirectionWrapper {
 impl DirectionWrapper {
     /// Update the direction. Passing `None` should be equivalent to "stopping" the entity.
     pub fn set(&mut self, direction: Option<MovementDirection>) {
-        println!("DirectionWrapper::set({:?})", direction);
+        debug!("DirectionWrapper::set({:?})", direction);
         self.direction = direction;
     }
 }
