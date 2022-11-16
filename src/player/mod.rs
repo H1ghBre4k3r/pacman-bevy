@@ -17,7 +17,7 @@ impl Plugin for PlayerPlugin {
 
 /// Component for representing Pacman
 #[derive(Component)]
-struct Pacman;
+pub struct Pacman;
 
 /// Spawn a new player entity and all its components
 fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {

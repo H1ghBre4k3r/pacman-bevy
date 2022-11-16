@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, AddAssign};
 
 use bevy::prelude::*;
 
@@ -33,6 +33,15 @@ impl Add<MovementDirection> for Vec3 {
     fn add(self, rhs: MovementDirection) -> Self::Output {
         let rhs: Vec3 = rhs.into();
         self + rhs
+    }
+}
+
+impl AddAssign<MovementDirection> for Vec3 {
+    fn add_assign(&mut self, rhs: MovementDirection) {
+        let rhs: Vec3 = rhs.into();
+        self.x += rhs.x;
+        self.y += rhs.y;
+        self.z += rhs.z;
     }
 }
 

@@ -6,6 +6,7 @@ mod view;
 
 use ascii::load_ascii;
 use bevy::prelude::*;
+use gameloop::GameLoop;
 use map::MapPlugin;
 use player::PlayerPlugin;
 use view::{ViewConfigurationPlugin, SCREEN_HEIGHT, SCREEN_WIDTH};
@@ -16,6 +17,7 @@ fn main() {
         .add_plugin(PlayerPlugin)
         .add_plugin(MapPlugin)
         .add_plugin(ViewConfigurationPlugin)
+        .add_plugin(GameLoop)
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
