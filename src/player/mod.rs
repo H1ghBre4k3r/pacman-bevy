@@ -15,9 +15,11 @@ impl Plugin for PlayerPlugin {
     }
 }
 
+/// Component for representing Pacman
 #[derive(Component)]
 struct Pacman;
 
+/// Spawn a new player entity and all its components
 fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {
     let mut sprite = TextureAtlasSprite::new(SpriteIndices::PacmanOpen.into());
     sprite.custom_size = Some(Vec2::splat(1.));
@@ -38,6 +40,7 @@ fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {
         .insert(DirectionWrapper::default());
 }
 
+/// Check, if there are any important keys pressed by the user.
 fn check_for_input(
     keyboard_input: Res<Input<KeyCode>>,
     mut direction_query: Query<&mut DirectionWrapper, With<Pacman>>,
