@@ -17,6 +17,15 @@ const GENERAL_OFFSET: Vec3 = Vec3 {
 #[derive(Component)]
 pub struct WallBundle;
 
+/// Component representing a specific part of a wall.
+#[derive(Component)]
+pub enum WallPart {
+    TopLeft,
+    TopRight,
+    BottomRight,
+    BottomLeft,
+}
+
 /// Determine the sprites for a wall depending on the sprites around it.
 pub fn spawn_sprites_for_wall(
     commands: &mut Commands,
@@ -56,7 +65,7 @@ pub fn spawn_sprites_for_wall(
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
-                parent.spawn(SpriteSheetBundle {
+                parent.spawn(WallPart::TopLeft).insert(SpriteSheetBundle {
                     sprite,
                     texture_atlas: texture_atlas.clone(),
                     transform: Transform {
@@ -84,7 +93,7 @@ pub fn spawn_sprites_for_wall(
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
-                parent.spawn(SpriteSheetBundle {
+                parent.spawn(WallPart::TopRight).insert(SpriteSheetBundle {
                     sprite,
                     texture_atlas: texture_atlas.clone(),
                     transform: Transform {
@@ -112,21 +121,23 @@ pub fn spawn_sprites_for_wall(
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
-                parent.spawn(SpriteSheetBundle {
-                    sprite,
-                    texture_atlas: texture_atlas.clone(),
-                    transform: Transform {
-                        translation: Vec3 {
-                            x: 0.5,
-                            z: 1.0,
+                parent
+                    .spawn(WallPart::BottomRight)
+                    .insert(SpriteSheetBundle {
+                        sprite,
+                        texture_atlas: texture_atlas.clone(),
+                        transform: Transform {
+                            translation: Vec3 {
+                                x: 0.5,
+                                z: 1.0,
+                                ..default()
+                            },
+                            scale: Vec3::new(1.0, 1.0, 0.0),
+                            rotation: Quat::from_rotation_z(PI + rotation),
                             ..default()
                         },
-                        scale: Vec3::new(1.0, 1.0, 0.0),
-                        rotation: Quat::from_rotation_z(PI + rotation),
                         ..default()
-                    },
-                    ..default()
-                });
+                    });
             }
 
             // bottom left
@@ -140,20 +151,22 @@ pub fn spawn_sprites_for_wall(
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
-                parent.spawn(SpriteSheetBundle {
-                    sprite,
-                    texture_atlas: texture_atlas.clone(),
-                    transform: Transform {
-                        translation: Vec3 {
-                            z: 1.0,
+                parent
+                    .spawn(WallPart::BottomLeft)
+                    .insert(SpriteSheetBundle {
+                        sprite,
+                        texture_atlas: texture_atlas.clone(),
+                        transform: Transform {
+                            translation: Vec3 {
+                                z: 1.0,
+                                ..default()
+                            },
+                            scale: Vec3::new(1.0, 1.0, 0.0),
+                            rotation: Quat::from_rotation_z(FRAC_PI_2 + rotation),
                             ..default()
                         },
-                        scale: Vec3::new(1.0, 1.0, 0.0),
-                        rotation: Quat::from_rotation_z(FRAC_PI_2 + rotation),
                         ..default()
-                    },
-                    ..default()
-                });
+                    });
             }
         });
 }
