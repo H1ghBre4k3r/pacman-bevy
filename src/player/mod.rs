@@ -1,3 +1,7 @@
+mod direction;
+
+pub use self::direction::*;
+
 use bevy::{prelude::*, sprite::Anchor};
 
 use crate::ascii::{AsciiSheet, SpriteIndices};
@@ -34,53 +38,6 @@ fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {
         .insert(DirectionWrapper::default());
 }
 
-#[derive(Clone, Copy, Debug)]
-enum PlayerDirection {
-    Up,
-    Right,
-    Left,
-    Down,
-}
-
-#[derive(Component, Debug, Default)]
-struct DirectionWrapper {
-    pub direction: Option<PlayerDirection>,
-}
-
-impl DirectionWrapper {
-    pub fn set(&mut self, direction: Option<PlayerDirection>) {
-        debug!("DirectionWrapper::set({:?})", direction);
-        self.direction = direction;
-    }
-}
-
-impl Into<Vec3> for PlayerDirection {
-    fn into(self) -> Vec3 {
-        match self {
-            Self::Up => Vec3 {
-                x: 0.0,
-                y: 1.0,
-                z: 0.0,
-            },
-            Self::Right => Vec3 {
-                x: 1.0,
-                y: 0.0,
-                z: 0.0,
-            },
-            Self::Down => Vec3 {
-                x: 0.0,
-                y: -1.0,
-                z: 0.0,
-            },
-            Self::Left => Vec3 {
-                x: -1.0,
-                y: 0.0,
-                z: 0.0,
-            },
-        }
-    }
-}
-
 fn check_for_input(
     keyboard_input: Res<Input<KeyCode>>,
     mut direction_query: Query<&mut DirectionWrapper, With<Pacman>>,
@@ -89,16 +46,16 @@ fn check_for_input(
 
     // TODO: should this be exclusive?
     if keyboard_input.just_pressed(KeyCode::W) {
-        direction.set(Some(PlayerDirection::Up));
+        direction.set(Some(MovementDirection::Up));
     }
     if keyboard_input.just_pressed(KeyCode::A) {
-        direction.set(Some(PlayerDirection::Left));
+        direction.set(Some(MovementDirection::Left));
     }
     if keyboard_input.just_pressed(KeyCode::S) {
-        direction.set(Some(PlayerDirection::Down));
+        direction.set(Some(MovementDirection::Down));
     }
     if keyboard_input.just_pressed(KeyCode::D) {
-        direction.set(Some(PlayerDirection::Right));
+        direction.set(Some(MovementDirection::Right));
     }
     if keyboard_input.just_pressed(KeyCode::Space) {
         direction.set(None);
