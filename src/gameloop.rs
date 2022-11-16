@@ -23,7 +23,8 @@ fn move_player(
 ) {
     let (mut transform, direction_wrapper) = transform_direction_query.get_single_mut().unwrap();
     let direction = direction_wrapper.direction;
-    if let Some(direction) = direction {
-        transform.translation += direction;
-    }
+    let Some(direction) = direction else {
+        return;
+    };
+    transform.translation += direction;
 }
