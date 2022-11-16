@@ -3,7 +3,7 @@ use bevy::{prelude::*, sprite::Anchor};
 use crate::ascii::SpriteIndices;
 
 #[derive(Component)]
-struct Coin;
+pub struct Coin;
 
 /// Spawn a coin at the given location
 pub fn spawn_coin(commands: &mut Commands, texture_atlas: Handle<TextureAtlas>, x: i32, y: i32) {

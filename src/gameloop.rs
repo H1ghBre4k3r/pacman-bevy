@@ -1,7 +1,7 @@
 use bevy::{prelude::*, time::FixedTimestep};
 
 use crate::{
-    map::WallTile,
+    map::{Coin, WallTile},
     player::{DirectionWrapper, Pacman},
     view::{COLUMNS, ROWS},
 };
@@ -16,7 +16,8 @@ impl Plugin for GameLoop {
         app.add_system_set(
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(TICK_TIME))
-                .with_system(move_player),
+                .with_system(move_player)
+                .with_system(eat_coint.after(move_player)),
         );
     }
 }
@@ -60,4 +61,23 @@ fn move_player(
     }
 
     transform.translation = new_position;
+}
+
+/// Eat the coin at the current location of pacman
+fn eat_coint(
+    mut commands: Commands,
+    pacman_query: Query<&Transform, (With<Pacman>, Without<Coin>, Without<WallTile>)>,
+    coins: Query<(&Transform, Entity), (With<Coin>, Without<Pacman>, Without<WallTile>)>,
+) {
+    // convert coordinate to u32 to avoid floating point errors
+    let transform = pacman_query.get_single().unwrap();
+    let x = transform.translation.x as u32;
+    let y = transform.translation.y as u32;
+
+    // check if there is a coin at the current position
+    for (position, coin) in &coins {
+        if x == position.translation.x as u32 && y == position.translation.y as u32 {
+            commands.entity(coin).despawn();
+        }
+    }
 }
