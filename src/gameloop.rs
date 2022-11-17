@@ -17,7 +17,7 @@ impl Plugin for GameLoop {
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(TICK_TIME))
                 .with_system(move_player)
-                .with_system(eat_coint.after(move_player)),
+                .with_system(eat_coin.after(move_player)),
         );
     }
 }
@@ -64,7 +64,7 @@ fn move_player(
 }
 
 /// Eat the coin at the current location of pacman
-fn eat_coint(
+fn eat_coin(
     mut commands: Commands,
     pacman_query: Query<&Transform, (With<Pacman>, Without<Coin>, Without<WallTile>)>,
     coins: Query<(&Transform, Entity), (With<Coin>, Without<Pacman>, Without<WallTile>)>,
