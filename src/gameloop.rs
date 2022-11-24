@@ -27,7 +27,7 @@ fn move_player(
     mut transform_direction_query: Query<(&mut Transform, &DirectionWrapper), With<Pacman>>,
     wall_query: Query<&Transform, (With<WallTile>, Without<Pacman>)>,
 ) {
-    let (mut transform, direction_wrapper) = transform_direction_query.get_single_mut().unwrap();
+    let (mut transform, direction_wrapper) = transform_direction_query.single_mut();
     let direction = direction_wrapper.direction;
     let Some(direction) = direction else {
         return;
@@ -70,7 +70,7 @@ fn eat_coin(
     coins: Query<(&Transform, Entity), (With<Coin>, Without<Pacman>, Without<WallTile>)>,
 ) {
     // convert coordinate to u32 to avoid floating point errors
-    let transform = pacman_query.get_single().unwrap();
+    let transform = pacman_query.single();
     let x = transform.translation.x as u32;
     let y = transform.translation.y as u32;
 

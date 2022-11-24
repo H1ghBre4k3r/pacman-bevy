@@ -4,17 +4,24 @@ use std::f32::consts::{FRAC_PI_2, PI};
 
 pub use self::direction::*;
 
-use bevy::{prelude::*, sprite::Anchor};
+use bevy::{prelude::*, sprite::Anchor, time::FixedTimestep};
 
 use crate::ascii::{AsciiSheet, SpriteIndices};
 
 pub struct PlayerPlugin;
 
+const TICK_TIME: f64 = 1.0 / 4.0;
+
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(spawn_player)
             .add_system(check_for_input)
-            .add_system(rotate_pacman_head.after(check_for_input));
+            .add_system(rotate_pacman_head.after(check_for_input))
+            .add_system_set(
+                SystemSet::new()
+                    .with_run_criteria(FixedTimestep::step(TICK_TIME))
+                    .with_system(change_pacman_mouth),
+            );
     }
 }
 
@@ -24,7 +31,7 @@ pub struct Pacman;
 
 /// Spawn a new player entity and all its components
 fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {
-    let mut sprite = TextureAtlasSprite::new(SpriteIndices::PacmanOpen.into());
+    let mut sprite = TextureAtlasSprite::new(SpriteIndices::PacmanClosed.into());
     sprite.custom_size = Some(Vec2::splat(1.));
     sprite.anchor = Anchor::BottomLeft;
 
@@ -48,7 +55,7 @@ fn check_for_input(
     keyboard_input: Res<Input<KeyCode>>,
     mut direction_query: Query<&mut DirectionWrapper, With<Pacman>>,
 ) {
-    let mut direction = direction_query.get_single_mut().unwrap();
+    let mut direction = direction_query.single_mut();
 
     // TODO: should this be exclusive?
     if keyboard_input.just_pressed(KeyCode::W) {
@@ -75,8 +82,7 @@ fn rotate_pacman_head(
         With<Pacman>,
     >,
 ) {
-    let (mut transformation, direction_wrapper, mut sprite) =
-        pacman_query.get_single_mut().unwrap();
+    let (mut transformation, direction_wrapper, mut sprite) = pacman_query.single_mut();
     let direction = direction_wrapper.direction;
     let Some(direction) = direction else {
         return;
@@ -90,4 +96,16 @@ fn rotate_pacman_head(
     };
     transformation.rotation = rotation;
     sprite.anchor = anchor;
+}
+
+fn change_pacman_mouth(mut pacman_query: Query<&mut TextureAtlasSprite, With<Pacman>>) {
+    let mut sprite = pacman_query.single_mut();
+    let open_mouth: usize = SpriteIndices::PacmanOpen.into();
+    let closed_mouth: usize = SpriteIndices::PacmanClosed.into();
+
+    if sprite.index == open_mouth {
+        sprite.index = closed_mouth;
+    } else {
+        sprite.index = open_mouth;
+    }
 }
