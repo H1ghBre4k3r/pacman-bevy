@@ -24,13 +24,18 @@ impl Plugin for ViewConfigurationPlugin {
 fn spawn_camera(mut commands: Commands) {
     let mut camera = Camera2dBundle::default();
 
-    camera.projection.scaling_mode = ScalingMode::None;
+    // set scaling (i.e., viewport) to given columns and rows
+    camera.projection.scaling_mode = ScalingMode::Fixed {
+        width: COLUMNS as f32,
+        height: ROWS as f32,
+    };
 
-    camera.projection.top = ROWS as f32;
-    camera.projection.bottom = 0.0;
-
-    camera.projection.right = COLUMNS as f32;
-    camera.projection.left = 0.0;
+    // move camera to upper right
+    camera.transform.translation = Vec3 {
+        x: (COLUMNS as f32) / 2.,
+        y: (ROWS as f32) / 2.,
+        z: 1000.,
+    };
 
     commands.spawn(camera);
 }

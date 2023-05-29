@@ -13,7 +13,7 @@ use view::{ViewConfigurationPlugin, SCREEN_HEIGHT, SCREEN_WIDTH};
 
 fn main() {
     App::new()
-        .add_startup_system_to_stage(StartupStage::PreStartup, load_ascii)
+        .add_startup_system(load_ascii.in_base_set(StartupSet::PreStartup))
         .add_plugin(PlayerPlugin)
         .add_plugin(MapPlugin)
         .add_plugin(ViewConfigurationPlugin)
@@ -21,13 +21,12 @@ fn main() {
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
-                    window: WindowDescriptor {
-                        width: SCREEN_WIDTH,
-                        height: SCREEN_HEIGHT,
+                    primary_window: Some(Window {
+                        resolution: (SCREEN_WIDTH, SCREEN_HEIGHT).into(),
                         title: "Pacman Bevy".to_string(),
                         resizable: false,
                         ..default()
-                    },
+                    }),
                     ..default()
                 })
                 .set(ImagePlugin::default_nearest()),

@@ -14,9 +14,9 @@ pub enum SpriteIndices {
     LargeCoin = 13,
 }
 
-impl Into<usize> for SpriteIndices {
-    fn into(self) -> usize {
-        self as usize
+impl From<SpriteIndices> for usize {
+    fn from(val: SpriteIndices) -> Self {
+        val as usize
     }
 }
 

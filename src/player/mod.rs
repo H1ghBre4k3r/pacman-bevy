@@ -1,10 +1,13 @@
 mod direction;
 
-use std::f32::consts::{FRAC_PI_2, PI};
+use std::{
+    f32::consts::{FRAC_PI_2, PI},
+    time::Duration,
+};
 
 pub use self::direction::*;
 
-use bevy::{prelude::*, sprite::Anchor, time::FixedTimestep};
+use bevy::{prelude::*, sprite::Anchor, time::common_conditions::on_timer};
 
 use crate::ascii::{AsciiSheet, SpriteIndices};
 
@@ -17,11 +20,7 @@ impl Plugin for PlayerPlugin {
         app.add_startup_system(spawn_player)
             .add_system(check_for_input)
             .add_system(rotate_pacman_head.after(check_for_input))
-            .add_system_set(
-                SystemSet::new()
-                    .with_run_criteria(FixedTimestep::step(TICK_TIME))
-                    .with_system(change_pacman_mouth),
-            );
+            .add_system(change_pacman_mouth.run_if(on_timer(Duration::from_secs_f64(TICK_TIME))));
     }
 }
 

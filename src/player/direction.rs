@@ -45,23 +45,23 @@ impl AddAssign<MovementDirection> for Vec3 {
     }
 }
 
-impl Into<Vec3> for MovementDirection {
+impl From<MovementDirection> for Vec3 {
     /// Convert a MovementDirection into a Vec3
-    fn into(self) -> Vec3 {
-        match self {
-            Self::Up => Vec3 {
+    fn from(val: MovementDirection) -> Self {
+        match val {
+            MovementDirection::Up => Vec3 {
                 y: 1.0,
                 ..default()
             },
-            Self::Right => Vec3 {
+            MovementDirection::Right => Vec3 {
                 x: 1.0,
                 ..default()
             },
-            Self::Down => Vec3 {
+            MovementDirection::Down => Vec3 {
                 y: -1.0,
                 ..default()
             },
-            Self::Left => Vec3 {
+            MovementDirection::Left => Vec3 {
                 x: -1.0,
                 ..default()
             },

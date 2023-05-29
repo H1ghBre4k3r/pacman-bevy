@@ -38,7 +38,7 @@ impl TileMap {
 
         // TODO: evaluate (or think about) whether this is needed
         assert!(
-            columns.len() > 0,
+            !columns.is_empty(),
             "Expected map to have at least one column"
         );
 
@@ -66,7 +66,7 @@ impl TileMap {
         }
         match self._tiles.get(x as usize) {
             Some(column) => {
-                return column.get(y as usize).map(|tile| tile.clone());
+                return column.get(y as usize).copied();
             }
             None => None,
         }

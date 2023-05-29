@@ -16,7 +16,7 @@ const GENERAL_OFFSET: Vec3 = Vec3 {
     z: 0.0,
 };
 
-/// Component representing a wall tile on the map.
+/// Component representing a wall on the map.
 /// It has (or at least should have) 4 children (one for each corner).
 #[derive(Component)]
 pub struct WallTile;
@@ -71,7 +71,6 @@ pub fn spawn_sprites_for_wall(
                         },
                         scale: Vec3::new(1.0, 1.0, 0.0),
                         rotation: Quat::from_rotation_z(rotation),
-                        ..default()
                     },
                     ..default()
                 });
@@ -99,7 +98,6 @@ pub fn spawn_sprites_for_wall(
                         },
                         scale: Vec3::new(1.0, 1.0, 0.0),
                         rotation: Quat::from_rotation_z(-FRAC_PI_2 + rotation),
-                        ..default()
                     },
                     ..default()
                 });
@@ -129,7 +127,6 @@ pub fn spawn_sprites_for_wall(
                             },
                             scale: Vec3::new(1.0, 1.0, 0.0),
                             rotation: Quat::from_rotation_z(PI + rotation),
-                            ..default()
                         },
                         ..default()
                     });
@@ -158,7 +155,6 @@ pub fn spawn_sprites_for_wall(
                             },
                             scale: Vec3::new(1.0, 1.0, 0.0),
                             rotation: Quat::from_rotation_z(FRAC_PI_2 + rotation),
-                            ..default()
                         },
                         ..default()
                     });

@@ -73,9 +73,7 @@ impl WallPart {
                         None
                     }
                 },
-                None => match three {
-                    _ => Some((SpriteIndices::WallStraight, 0.0)),
-                },
+                None => Some((SpriteIndices::WallStraight, 0.0)),
             },
             None => match two {
                 None => match three {

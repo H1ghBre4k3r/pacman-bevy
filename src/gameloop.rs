@@ -1,4 +1,6 @@
-use bevy::{prelude::*, time::FixedTimestep};
+use std::time::Duration;
+
+use bevy::{prelude::*, time::common_conditions::on_fixed_timer};
 
 use crate::{
     map::{Coin, WallTile},
@@ -13,12 +15,10 @@ pub struct GameLoop;
 
 impl Plugin for GameLoop {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(TICK_TIME))
-                .with_system(move_player)
-                .with_system(eat_coin.after(move_player)),
-        );
+        app.add_system(move_player.run_if(on_fixed_timer(Duration::from_millis(
+            (TICK_TIME * 1000.0) as u64,
+        ))))
+        .add_system(eat_coin.after(move_player));
     }
 }
 
@@ -63,12 +63,18 @@ fn move_player(
     transform.translation = new_position;
 }
 
+type PacmanQuery<'world, 'state, 'a> =
+    Query<'world, 'state, &'a Transform, (With<Pacman>, Without<Coin>, Without<WallTile>)>;
+
+type CoinQuery<'world, 'state, 'a> = Query<
+    'world,
+    'state,
+    (&'a Transform, Entity),
+    (With<Coin>, Without<Pacman>, Without<WallTile>),
+>;
+
 /// Eat the coin at the current location of pacman
-fn eat_coin(
-    mut commands: Commands,
-    pacman_query: Query<&Transform, (With<Pacman>, Without<Coin>, Without<WallTile>)>,
-    coins: Query<(&Transform, Entity), (With<Coin>, Without<Pacman>, Without<WallTile>)>,
-) {
+fn eat_coin(mut commands: Commands, pacman_query: PacmanQuery, coins: CoinQuery) {
     // convert coordinate to u32 to avoid floating point errors
     let transform = pacman_query.single();
     let x = transform.translation.x as u32;
