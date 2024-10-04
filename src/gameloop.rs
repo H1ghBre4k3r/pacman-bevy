@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use bevy::{prelude::*, time::common_conditions::on_fixed_timer};
+use bevy::{prelude::*, time::common_conditions::on_timer};
 
 use crate::{
     map::{Coin, WallTile},
@@ -18,9 +18,7 @@ impl Plugin for GameLoop {
         app.add_systems(
             Update,
             (
-                move_player.run_if(on_fixed_timer(Duration::from_millis(
-                    (TICK_TIME * 1000.0) as u64,
-                ))),
+                move_player.run_if(on_timer(Duration::from_millis((TICK_TIME * 1000.0) as u64))),
                 eat_coin,
             )
                 .chain(),
