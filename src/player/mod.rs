@@ -17,10 +17,12 @@ const TICK_TIME: f64 = 1.0 / 4.0;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_player)
-            .add_system(check_for_input)
-            .add_system(rotate_pacman_head.after(check_for_input))
-            .add_system(change_pacman_mouth.run_if(on_timer(Duration::from_secs_f64(TICK_TIME))));
+        app.add_systems(Startup, spawn_player)
+            .add_systems(Update, (check_for_input, rotate_pacman_head).chain())
+            .add_systems(
+                Update,
+                change_pacman_mouth.run_if(on_timer(Duration::from_secs_f64(TICK_TIME))),
+            );
     }
 }
 

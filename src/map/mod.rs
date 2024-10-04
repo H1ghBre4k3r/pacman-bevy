@@ -18,7 +18,7 @@ pub struct MapPlugin;
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(TileMap::from_string("assets/map.txt"))
-            .add_startup_system(spawn_tiles);
+            .add_systems(Startup, spawn_tiles);
     }
 }
 

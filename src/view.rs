@@ -16,7 +16,7 @@ pub struct ViewConfigurationPlugin;
 impl Plugin for ViewConfigurationPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(ClearColor(CLEAR_COLOR))
-            .add_startup_system(spawn_camera);
+            .add_systems(Startup, spawn_camera);
     }
 }
 

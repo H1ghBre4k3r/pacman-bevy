@@ -15,10 +15,16 @@ pub struct GameLoop;
 
 impl Plugin for GameLoop {
     fn build(&self, app: &mut App) {
-        app.add_system(move_player.run_if(on_fixed_timer(Duration::from_millis(
-            (TICK_TIME * 1000.0) as u64,
-        ))))
-        .add_system(eat_coin.after(move_player));
+        app.add_systems(
+            Update,
+            (
+                move_player.run_if(on_fixed_timer(Duration::from_millis(
+                    (TICK_TIME * 1000.0) as u64,
+                ))),
+                eat_coin,
+            )
+                .chain(),
+        );
     }
 }
 

@@ -13,11 +13,11 @@ use view::{ViewConfigurationPlugin, SCREEN_HEIGHT, SCREEN_WIDTH};
 
 fn main() {
     App::new()
-        .add_startup_system(load_ascii.in_base_set(StartupSet::PreStartup))
-        .add_plugin(PlayerPlugin)
-        .add_plugin(MapPlugin)
-        .add_plugin(ViewConfigurationPlugin)
-        .add_plugin(GameLoop)
+        .add_systems(PreStartup, load_ascii)
+        .add_plugins(PlayerPlugin)
+        .add_plugins(MapPlugin)
+        .add_plugins(ViewConfigurationPlugin)
+        .add_plugins(GameLoop)
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
@@ -31,6 +31,6 @@ fn main() {
                 })
                 .set(ImagePlugin::default_nearest()),
         )
-        .add_system(bevy::window::close_on_esc)
+        .add_systems(Update, bevy::window::close_on_esc)
         .run();
 }
