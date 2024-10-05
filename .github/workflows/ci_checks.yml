@@ -27,7 +27,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - run: sudo apt install libasound2-dev
-        if: ${{ matrix.os }} == ubuntu-latest
+        if: matrix.os == 'ubuntu-latest'
       - uses: actions/checkout@v4
         with:
           submodules: true
@@ -52,7 +52,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - run: sudo apt install libasound2-dev
-        if: ${{ matrix.os }} == ubuntu-latest
+        if: matrix.os == 'ubuntu-latest'
       - uses: actions/checkout@v4
         with:
           submodules: true
