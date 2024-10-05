@@ -1,15 +1,22 @@
 use bevy::{prelude::*, sprite::Anchor};
 
-use crate::ascii::SpriteIndices;
+use crate::ascii::{AsciiSheet, SpriteIndices};
 
 #[derive(Component)]
 pub struct Coin;
 
 /// Spawn a coin at the given location
-pub fn spawn_coin(commands: &mut Commands, texture_atlas: Handle<TextureAtlas>, x: i32, y: i32) {
-    let mut sprite = TextureAtlasSprite::new(SpriteIndices::SmallCoin.into());
-    sprite.custom_size = Some(Vec2::splat(1.0));
-    sprite.anchor = Anchor::BottomLeft;
+pub fn spawn_coin(commands: &mut Commands, ascii: &Res<AsciiSheet>, x: i32, y: i32) {
+    let sprite = Sprite {
+        custom_size: Some(Vec2::splat(1.0)),
+        anchor: Anchor::BottomLeft,
+        ..default()
+    };
+
+    let atlas = TextureAtlas {
+        index: SpriteIndices::SmallCoin.into(),
+        layout: ascii.layout.clone(),
+    };
     commands.spawn(Coin).insert(SpriteSheetBundle {
         transform: Transform {
             translation: Vec3 {
@@ -21,7 +28,8 @@ pub fn spawn_coin(commands: &mut Commands, texture_atlas: Handle<TextureAtlas>, 
             ..default()
         },
         sprite,
-        texture_atlas,
+        atlas,
+        texture: ascii.image.clone(),
         ..default()
     });
 }

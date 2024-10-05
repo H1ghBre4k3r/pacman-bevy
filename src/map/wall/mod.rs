@@ -4,9 +4,9 @@ pub use self::wall_part::*;
 
 use std::f32::consts::{FRAC_PI_2, PI};
 
-use bevy::prelude::*;
+use bevy::{prelude::*, sprite::Anchor};
 
-use crate::ascii::SpriteIndices;
+use crate::ascii::{AsciiSheet, SpriteIndices};
 
 use super::TileMap;
 
@@ -24,16 +24,13 @@ pub struct WallTile;
 /// Determine the sprites for a wall depending on the sprites around it.
 pub fn spawn_sprites_for_wall(
     commands: &mut Commands,
-    texture_atlas: Handle<TextureAtlas>,
+    ascii: &Res<AsciiSheet>,
     tiles: &TileMap,
     x: i32,
     y: i32,
 ) {
-    let mut straight_wall = TextureAtlasSprite::new(SpriteIndices::WallStraight.into());
-    straight_wall.custom_size = Some(Vec2::splat(0.5));
-
-    let mut corner_wall = TextureAtlasSprite::new(SpriteIndices::WallCorner.into());
-    corner_wall.custom_size = Some(Vec2::splat(0.5));
+    let layout = ascii.layout.clone();
+    let texture = ascii.image.clone();
 
     commands
         .spawn(WallTile)
@@ -46,6 +43,16 @@ pub fn spawn_sprites_for_wall(
                 } + GENERAL_OFFSET,
                 ..default()
             },
+            sprite: Sprite {
+                anchor: Anchor::BottomLeft,
+                custom_size: Some(Vec2::splat(1.0)),
+                ..default()
+            },
+            texture: texture.clone(),
+            atlas: TextureAtlas {
+                layout: layout.clone(),
+                index: SpriteIndices::Empty.into(),
+            },
             ..default()
         })
         .with_children(|parent| {
@@ -55,14 +62,18 @@ pub fn spawn_sprites_for_wall(
                 tiles.at(x - 1, y + 1),
                 tiles.at(x, y + 1),
             ) {
-                let sprite = TextureAtlasSprite {
-                    index: sprite_index.into(),
+                let sprite = Sprite {
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
+                let atlas = TextureAtlas {
+                    layout: layout.clone(),
+                    index: sprite_index.into(),
+                };
+
                 parent.spawn(WallPart::TopLeft).insert(SpriteSheetBundle {
                     sprite,
-                    texture_atlas: texture_atlas.clone(),
+                    atlas,
                     transform: Transform {
                         translation: Vec3 {
                             y: 0.5,
@@ -72,6 +83,7 @@ pub fn spawn_sprites_for_wall(
                         scale: Vec3::new(1.0, 1.0, 0.0),
                         rotation: Quat::from_rotation_z(rotation),
                     },
+                    texture: texture.clone(),
                     ..default()
                 });
             }
@@ -82,14 +94,18 @@ pub fn spawn_sprites_for_wall(
                 tiles.at(x + 1, y + 1),
                 tiles.at(x + 1, y),
             ) {
-                let sprite = TextureAtlasSprite {
-                    index: sprite_index.into(),
+                let sprite = Sprite {
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
+                let atlas = TextureAtlas {
+                    layout: layout.clone(),
+                    index: sprite_index.into(),
+                };
+
                 parent.spawn(WallPart::TopRight).insert(SpriteSheetBundle {
                     sprite,
-                    texture_atlas: texture_atlas.clone(),
+                    atlas,
                     transform: Transform {
                         translation: Vec3 {
                             x: 0.5,
@@ -99,6 +115,7 @@ pub fn spawn_sprites_for_wall(
                         scale: Vec3::new(1.0, 1.0, 0.0),
                         rotation: Quat::from_rotation_z(-FRAC_PI_2 + rotation),
                     },
+                    texture: texture.clone(),
                     ..default()
                 });
             }
@@ -109,16 +126,21 @@ pub fn spawn_sprites_for_wall(
                 tiles.at(x + 1, y - 1),
                 tiles.at(x, y - 1),
             ) {
-                let sprite = TextureAtlasSprite {
-                    index: sprite_index.into(),
+                let sprite = Sprite {
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
                 };
+
+                let atlas = TextureAtlas {
+                    layout: layout.clone(),
+                    index: sprite_index.into(),
+                };
+
                 parent
                     .spawn(WallPart::BottomRight)
                     .insert(SpriteSheetBundle {
                         sprite,
-                        texture_atlas: texture_atlas.clone(),
+                        atlas,
                         transform: Transform {
                             translation: Vec3 {
                                 x: 0.5,
@@ -128,6 +150,7 @@ pub fn spawn_sprites_for_wall(
                             scale: Vec3::new(1.0, 1.0, 0.0),
                             rotation: Quat::from_rotation_z(PI + rotation),
                         },
+                        texture: texture.clone(),
                         ..default()
                     });
             }
@@ -138,16 +161,20 @@ pub fn spawn_sprites_for_wall(
                 tiles.at(x - 1, y - 1),
                 tiles.at(x - 1, y),
             ) {
-                let sprite = TextureAtlasSprite {
-                    index: sprite_index.into(),
+                let sprite = Sprite {
                     custom_size: Some(Vec2::splat(0.5)),
                     ..default()
+                };
+
+                let atlas = TextureAtlas {
+                    layout: layout.clone(),
+                    index: sprite_index.into(),
                 };
                 parent
                     .spawn(WallPart::BottomLeft)
                     .insert(SpriteSheetBundle {
                         sprite,
-                        texture_atlas: texture_atlas.clone(),
+                        atlas,
                         transform: Transform {
                             translation: Vec3 {
                                 z: 1.0,
@@ -156,6 +183,7 @@ pub fn spawn_sprites_for_wall(
                             scale: Vec3::new(1.0, 1.0, 0.0),
                             rotation: Quat::from_rotation_z(FRAC_PI_2 + rotation),
                         },
+                        texture,
                         ..default()
                     });
             }

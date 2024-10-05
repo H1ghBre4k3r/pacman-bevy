@@ -30,16 +30,9 @@ fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>
         for (y, tile) in column.iter().enumerate() {
             match *tile {
                 Tile::Wall => {
-                    spawn_sprites_for_wall(
-                        &mut commands,
-                        ascii.0.clone(),
-                        &map,
-                        x as i32,
-                        y as i32,
-                    );
-                    continue;
+                    spawn_sprites_for_wall(&mut commands, &ascii, &map, x as i32, y as i32);
                 }
-                Tile::Coin => spawn_coin(&mut commands, ascii.0.clone(), x as i32, y as i32),
+                Tile::Coin => spawn_coin(&mut commands, &ascii, x as i32, y as i32),
                 _ => {
                     continue;
                 }
