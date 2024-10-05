@@ -1,6 +1,6 @@
 use bevy::{prelude::*, render::camera::ScalingMode};
 
-const CLEAR_COLOR: Color = Color::rgb(0.2, 0.2, 0.2);
+const CLEAR_COLOR: Color = Color::srgb(0.2, 0.2, 0.2);
 
 const TILE_SIZE: f32 = 40.0;
 

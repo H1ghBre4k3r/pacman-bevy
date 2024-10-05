@@ -32,11 +32,11 @@ pub fn load_ascii(
 ) {
     let image = assets.load("ascii.png");
     let atlas_layout = TextureAtlasLayout::from_grid(
-        Vec2::splat(32.), // 32x32px per sprite
+        UVec2::splat(32), // 32x32px per sprite
         4,
         4,
-        Some(Vec2::splat(0.0)),
-        Some(Vec2::default()),
+        Some(UVec2::splat(0)),
+        Some(UVec2::default()),
     );
 
     let layout_handle = texture_atlases.add(atlas_layout);

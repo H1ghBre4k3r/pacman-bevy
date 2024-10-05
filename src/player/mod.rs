@@ -48,17 +48,19 @@ fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {
 
     commands
         .spawn(Pacman)
-        .insert(SpriteSheetBundle {
-            transform: Transform {
-                translation: Vec3::new(1.0, 1.0, 10.0),
-                scale: Vec3::new(1.0, 1.0, 0.0),
+        .insert((
+            SpriteBundle {
+                transform: Transform {
+                    translation: Vec3::new(1.0, 1.0, 10.0),
+                    scale: Vec3::new(1.0, 1.0, 0.0),
+                    ..default()
+                },
+                sprite,
+                texture,
                 ..default()
             },
-            sprite,
             atlas,
-            texture,
-            ..default()
-        })
+        ))
         .insert(DirectionWrapper::default());
 }
 

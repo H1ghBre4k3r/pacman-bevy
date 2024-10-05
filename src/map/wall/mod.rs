@@ -34,27 +34,29 @@ pub fn spawn_sprites_for_wall(
 
     commands
         .spawn(WallTile)
-        .insert(SpriteSheetBundle {
-            transform: Transform {
-                translation: Vec3 {
-                    x: x as f32,
-                    y: y as f32,
-                    z: 1.0,
-                } + GENERAL_OFFSET,
+        .insert((
+            SpriteBundle {
+                transform: Transform {
+                    translation: Vec3 {
+                        x: x as f32,
+                        y: y as f32,
+                        z: 1.0,
+                    } + GENERAL_OFFSET,
+                    ..default()
+                },
+                sprite: Sprite {
+                    anchor: Anchor::BottomLeft,
+                    custom_size: Some(Vec2::splat(1.0)),
+                    ..default()
+                },
+                texture: texture.clone(),
                 ..default()
             },
-            sprite: Sprite {
-                anchor: Anchor::BottomLeft,
-                custom_size: Some(Vec2::splat(1.0)),
-                ..default()
-            },
-            texture: texture.clone(),
-            atlas: TextureAtlas {
+            TextureAtlas {
                 layout: layout.clone(),
                 index: SpriteIndices::Empty.into(),
             },
-            ..default()
-        })
+        ))
         .with_children(|parent| {
             // top left
             if let Some((sprite_index, rotation)) = WallPart::determine_sprite_for_wall_part(
@@ -71,21 +73,23 @@ pub fn spawn_sprites_for_wall(
                     index: sprite_index.into(),
                 };
 
-                parent.spawn(WallPart::TopLeft).insert(SpriteSheetBundle {
-                    sprite,
-                    atlas,
-                    transform: Transform {
-                        translation: Vec3 {
-                            y: 0.5,
-                            z: 1.0,
-                            ..default()
+                parent.spawn(WallPart::TopLeft).insert((
+                    SpriteBundle {
+                        sprite,
+                        transform: Transform {
+                            translation: Vec3 {
+                                y: 0.5,
+                                z: 1.0,
+                                ..default()
+                            },
+                            scale: Vec3::new(1.0, 1.0, 0.0),
+                            rotation: Quat::from_rotation_z(rotation),
                         },
-                        scale: Vec3::new(1.0, 1.0, 0.0),
-                        rotation: Quat::from_rotation_z(rotation),
+                        texture: texture.clone(),
+                        ..default()
                     },
-                    texture: texture.clone(),
-                    ..default()
-                });
+                    atlas,
+                ));
             }
 
             // top right
@@ -103,21 +107,23 @@ pub fn spawn_sprites_for_wall(
                     index: sprite_index.into(),
                 };
 
-                parent.spawn(WallPart::TopRight).insert(SpriteSheetBundle {
-                    sprite,
-                    atlas,
-                    transform: Transform {
-                        translation: Vec3 {
-                            x: 0.5,
-                            y: 0.5,
-                            z: 1.0,
+                parent.spawn(WallPart::TopRight).insert((
+                    SpriteBundle {
+                        sprite,
+                        transform: Transform {
+                            translation: Vec3 {
+                                x: 0.5,
+                                y: 0.5,
+                                z: 1.0,
+                            },
+                            scale: Vec3::new(1.0, 1.0, 0.0),
+                            rotation: Quat::from_rotation_z(-FRAC_PI_2 + rotation),
                         },
-                        scale: Vec3::new(1.0, 1.0, 0.0),
-                        rotation: Quat::from_rotation_z(-FRAC_PI_2 + rotation),
+                        texture: texture.clone(),
+                        ..default()
                     },
-                    texture: texture.clone(),
-                    ..default()
-                });
+                    atlas,
+                ));
             }
 
             // bottom right
@@ -136,11 +142,9 @@ pub fn spawn_sprites_for_wall(
                     index: sprite_index.into(),
                 };
 
-                parent
-                    .spawn(WallPart::BottomRight)
-                    .insert(SpriteSheetBundle {
+                parent.spawn(WallPart::BottomRight).insert((
+                    SpriteBundle {
                         sprite,
-                        atlas,
                         transform: Transform {
                             translation: Vec3 {
                                 x: 0.5,
@@ -152,7 +156,9 @@ pub fn spawn_sprites_for_wall(
                         },
                         texture: texture.clone(),
                         ..default()
-                    });
+                    },
+                    atlas,
+                ));
             }
 
             // bottom left
@@ -170,11 +176,9 @@ pub fn spawn_sprites_for_wall(
                     layout: layout.clone(),
                     index: sprite_index.into(),
                 };
-                parent
-                    .spawn(WallPart::BottomLeft)
-                    .insert(SpriteSheetBundle {
+                parent.spawn(WallPart::BottomLeft).insert((
+                    SpriteBundle {
                         sprite,
-                        atlas,
                         transform: Transform {
                             translation: Vec3 {
                                 z: 1.0,
@@ -185,7 +189,9 @@ pub fn spawn_sprites_for_wall(
                         },
                         texture,
                         ..default()
-                    });
+                    },
+                    atlas,
+                ));
             }
         });
 }

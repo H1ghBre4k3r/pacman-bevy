@@ -17,19 +17,22 @@ pub fn spawn_coin(commands: &mut Commands, ascii: &Res<AsciiSheet>, x: i32, y: i
         index: SpriteIndices::SmallCoin.into(),
         layout: ascii.layout.clone(),
     };
-    commands.spawn(Coin).insert(SpriteSheetBundle {
-        transform: Transform {
-            translation: Vec3 {
-                x: x as f32,
-                y: y as f32,
-                z: 1.0,
+
+    commands.spawn(Coin).insert((
+        SpriteBundle {
+            sprite,
+            transform: Transform {
+                translation: Vec3 {
+                    x: x as f32,
+                    y: y as f32,
+                    z: 1.0,
+                },
+                scale: Vec3::new(1.0, 1.0, 0.0),
+                ..default()
             },
-            scale: Vec3::new(1.0, 1.0, 0.0),
+            texture: ascii.image.clone(),
             ..default()
         },
-        sprite,
         atlas,
-        texture: ascii.image.clone(),
-        ..default()
-    });
+    ));
 }
