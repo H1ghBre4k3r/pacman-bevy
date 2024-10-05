@@ -26,7 +26,11 @@ jobs:
           - windows-latest
     runs-on: ${{ matrix.os }}
     steps:
+      - run: sudo apt install libasound2-dev
+        if: ${{ matrix.os }} == ubuntu-latest
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           profile: minimal
@@ -47,8 +51,11 @@ jobs:
           - windows-latest
     runs-on: ${{ matrix.os }}
     steps:
+      - run: sudo apt install libasound2-dev
+        if: ${{ matrix.os }} == ubuntu-latest
       - uses: actions/checkout@v4
-      - uses: ilammy/setup-nasm@v1
+        with:
+          submodules: true
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
@@ -58,6 +65,7 @@ jobs:
     name: Linting
     runs-on: ubuntu-latest
     steps:
+      - run: sudo apt install libasound2-dev
       - uses: actions/checkout@v4
         with:
           submodules: true
@@ -71,6 +79,7 @@ jobs:
     name: Formatting
     runs-on: ubuntu-latest
     steps:
+      - run: sudo apt install libasound2-dev
       - uses: actions/checkout@v4
         with:
           submodules: true
