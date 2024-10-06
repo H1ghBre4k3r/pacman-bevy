@@ -17,7 +17,7 @@ pub struct MapPlugin;
 /// Plugin for managing the map load and instantiation of tiles.
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(TileMap::from_string("assets/map.txt"))
+        app.insert_resource(TileMap::from_string("assets/lighthouse.txt"))
             .add_systems(Startup, spawn_tiles);
     }
 }
