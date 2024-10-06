@@ -1,15 +1,14 @@
-mod direction;
-
 use std::{
     f32::consts::{FRAC_PI_2, PI},
     time::Duration,
 };
 
-pub use self::direction::*;
-
 use bevy::{prelude::*, sprite::Anchor, time::common_conditions::on_timer};
 
-use crate::ascii::{AsciiSheet, SpriteIndices};
+use crate::{
+    ascii::{AsciiSheet, SpriteIndices},
+    DirectionWrapper, MovementDirection,
+};
 
 pub struct PlayerPlugin;
 

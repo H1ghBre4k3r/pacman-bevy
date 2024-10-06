@@ -14,7 +14,7 @@ use view::{ViewConfigurationPlugin, SCREEN_HEIGHT, SCREEN_WIDTH};
 fn main() {
     App::new()
         .add_systems(PreStartup, load_ascii)
-        .add_plugins(PlayerPlugin)
+        .add_plugins(EntityPlugin)
         .add_plugins(MapPlugin)
         .add_plugins(ViewConfigurationPlugin)
         .add_plugins(GameLoop)
