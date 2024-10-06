@@ -1,14 +1,14 @@
 mod ascii;
+mod entities;
 mod gameloop;
 mod map;
-mod player;
 mod view;
 
 use ascii::load_ascii;
 use bevy::prelude::*;
+use entities::*;
 use gameloop::GameLoop;
 use map::MapPlugin;
-use player::PlayerPlugin;
 use view::{ViewConfigurationPlugin, SCREEN_HEIGHT, SCREEN_WIDTH};
 
 fn main() {

@@ -3,8 +3,8 @@ use std::time::Duration;
 use bevy::{prelude::*, time::common_conditions::on_timer};
 
 use crate::{
+    entities::{DirectionWrapper, Pacman},
     map::{Coin, WallTile},
-    player::{DirectionWrapper, Pacman},
     view::{COLUMNS, ROWS},
 };
 
