@@ -24,17 +24,36 @@ impl Plugin for GhostPlugin {
 #[derive(Component)]
 pub struct Ghost;
 
+#[derive(Clone, Copy, Component)]
+pub enum GhostType {
+    Blinky,
+    Inky,
+    Pinky,
+    Clyde,
+}
+
+impl From<GhostType> for SpriteIndices {
+    fn from(value: GhostType) -> Self {
+        match value {
+            GhostType::Blinky => SpriteIndices::Blinky1,
+            GhostType::Inky => SpriteIndices::Inky1,
+            GhostType::Pinky => SpriteIndices::Pinky1,
+            GhostType::Clyde => SpriteIndices::Clyde1,
+        }
+    }
+}
+
 fn spawn_ghosts(mut commands: Commands, ascii: Res<AsciiSheet>) {
-    spawn_specific_ghost(&mut commands, &ascii, SpriteIndices::Blinky1, 5, 6);
-    spawn_specific_ghost(&mut commands, &ascii, SpriteIndices::Inky1, 5, 8);
-    spawn_specific_ghost(&mut commands, &ascii, SpriteIndices::Pinky1, 8, 8);
-    spawn_specific_ghost(&mut commands, &ascii, SpriteIndices::Clyde1, 8, 6);
+    spawn_specific_ghost(&mut commands, &ascii, GhostType::Blinky, 5, 6);
+    spawn_specific_ghost(&mut commands, &ascii, GhostType::Inky, 5, 8);
+    spawn_specific_ghost(&mut commands, &ascii, GhostType::Pinky, 8, 8);
+    spawn_specific_ghost(&mut commands, &ascii, GhostType::Clyde, 8, 6);
 }
 
 fn spawn_specific_ghost(
     commands: &mut Commands,
     ascii: &Res<AsciiSheet>,
-    index: SpriteIndices,
+    ghost: GhostType,
     x: u32,
     y: u32,
 ) {
@@ -49,11 +68,12 @@ fn spawn_specific_ghost(
 
     let atlas = TextureAtlas {
         layout,
-        index: index.into(),
+        index: SpriteIndices::from(ghost).into(),
     };
 
     commands
         .spawn(Ghost)
+        .insert(ghost)
         .insert((
             SpriteBundle {
                 transform: Transform {
