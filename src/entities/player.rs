@@ -7,6 +7,7 @@ use bevy::{prelude::*, sprite::Anchor, time::common_conditions::on_timer};
 
 use crate::{
     ascii::{AsciiSheet, SpriteIndices},
+    lighthouse::{LighthouseBundle, LighthouseColor, LighthousePosition},
     DirectionWrapper, MovementDirection,
 };
 
@@ -21,7 +22,8 @@ impl Plugin for PlayerPlugin {
             .add_systems(
                 Update,
                 change_pacman_mouth.run_if(on_timer(Duration::from_secs_f64(TICK_TIME))),
-            );
+            )
+            .add_systems(Update, update_lighthouse_position);
     }
 }
 
@@ -60,7 +62,20 @@ fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {
             },
             atlas,
         ))
-        .insert(DirectionWrapper::default());
+        .insert(DirectionWrapper::default())
+        .insert(LighthouseBundle {
+            position: LighthousePosition { x: 1, y: 1, z: 10 },
+            color: LighthouseColor::Inline(255, 255, 0),
+        });
+}
+
+fn update_lighthouse_position(
+    mut query: Query<(&Transform, &mut LighthousePosition), With<Pacman>>,
+) {
+    let (Transform { translation, .. }, mut position) = query.single_mut();
+    position.x = translation.x.max(0.0) as usize;
+    position.y = 13 - translation.y.max(0.0) as usize;
+    position.z = translation.z.max(0.0) as usize;
 }
 
 /// Check, if there are any important keys pressed by the user.
