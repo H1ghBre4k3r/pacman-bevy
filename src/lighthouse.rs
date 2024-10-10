@@ -34,7 +34,7 @@ impl Plugin for LighthousePlugin {
 
             app.insert_resource(LHWrapper(Arc::new(Mutex::new(lighthouse))));
             app.add_systems(
-                Update,
+                PostUpdate,
                 render_components.run_if(on_timer(Duration::from_secs_f64(1.0 / 60.0))),
             );
         });
@@ -53,13 +53,15 @@ fn render_components(
     entities.sort_by(|(a, _), (b, _)| a.z.cmp(&b.z));
 
     for (LighthousePosition { x, y, .. }, color) in entities {
-        frame.set(*x * 2, *y, color.to_lighthouse());
-        frame.set(*x * 2 + 1, *y, color.to_lighthouse());
+        let y = 13 - y.min(&13);
+        let x = x.min(&13);
+        frame.set(x * 2, y, color.to_lighthouse());
+        frame.set(x * 2 + 1, y, color.to_lighthouse());
     }
 
     let lh = lh.0.clone();
 
-    rt.0.spawn(async move {
+    rt.0.block_on(async move {
         if let Err(e) = lh.lock().await.put_model(frame).await {
             error!("Error sending to lighthouse: {e}");
         }

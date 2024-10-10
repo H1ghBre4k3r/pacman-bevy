@@ -74,7 +74,7 @@ fn update_lighthouse_position(
 ) {
     let (Transform { translation, .. }, mut position) = query.single_mut();
     position.x = translation.x.max(0.0) as usize;
-    position.y = 13 - translation.y.max(0.0) as usize;
+    position.y = translation.y.max(0.0) as usize;
     position.z = translation.z.max(0.0) as usize;
 }
 

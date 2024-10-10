@@ -32,7 +32,7 @@ fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>
                 Tile::Wall => {
                     spawn_sprites_for_wall(&mut commands, &ascii, &map, x as i32, y as i32);
                 }
-                Tile::Coin => spawn_coin(&mut commands, &ascii, x as i32, y as i32),
+                Tile::Coin => spawn_coin(&mut commands, &ascii, x, y),
                 _ => {
                     continue;
                 }
