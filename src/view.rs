@@ -4,8 +4,11 @@ const CLEAR_COLOR: Color = Color::srgb(0.2, 0.2, 0.2);
 
 const TILE_SIZE: f32 = 40.0;
 
-pub const COLUMNS: u32 = 19;
-pub const ROWS: u32 = 22;
+// pub const COLUMNS: u32 = 19;
+// pub const ROWS: u32 = 22;
+
+pub const COLUMNS: u32 = 14;
+pub const ROWS: u32 = 14;
 
 pub const SCREEN_WIDTH: f32 = TILE_SIZE * COLUMNS as f32;
 pub const SCREEN_HEIGHT: f32 = TILE_SIZE * ROWS as f32;

@@ -1,20 +1,34 @@
 mod ascii;
+mod entities;
 mod gameloop;
+mod lighthouse;
 mod map;
-mod player;
 mod view;
 
 use ascii::load_ascii;
 use bevy::prelude::*;
+use dotenv::dotenv;
+use entities::*;
 use gameloop::GameLoop;
+use lighthouse::LighthousePlugin;
 use map::MapPlugin;
-use player::PlayerPlugin;
 use view::{ViewConfigurationPlugin, SCREEN_HEIGHT, SCREEN_WIDTH};
 
+macro_rules! get_env {
+    ($name:expr) => {
+        std::env::var($name).expect(&format!("{} should be given", $name))
+    };
+    ($name:expr, $default:expr) => {
+        std::env::var($name).unwrap_or($default.into())
+    };
+}
+
 fn main() {
+    _ = dotenv().ok();
+
     App::new()
         .add_systems(PreStartup, load_ascii)
-        .add_plugins(PlayerPlugin)
+        .add_plugins(EntityPlugin)
         .add_plugins(MapPlugin)
         .add_plugins(ViewConfigurationPlugin)
         .add_plugins(GameLoop)
@@ -31,6 +45,10 @@ fn main() {
                 })
                 .set(ImagePlugin::default_nearest()),
         )
+        .add_plugins(LighthousePlugin {
+            token: get_env!("LH_TOKEN"),
+            user: get_env!("LH_USER"),
+        })
         .add_systems(Update, close_on_esc)
         .run();
 }

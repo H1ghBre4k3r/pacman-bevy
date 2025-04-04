@@ -6,7 +6,10 @@ use std::f32::consts::{FRAC_PI_2, PI};
 
 use bevy::{prelude::*, sprite::Anchor};
 
-use crate::ascii::{AsciiSheet, SpriteIndices};
+use crate::{
+    ascii::{AsciiSheet, SpriteIndices},
+    lighthouse::{LighthouseBundle, LighthouseColor, LighthousePosition},
+};
 
 use super::TileMap;
 
@@ -57,6 +60,14 @@ pub fn spawn_sprites_for_wall(
                 index: SpriteIndices::Empty.into(),
             },
         ))
+        .insert(LighthouseBundle {
+            position: LighthousePosition {
+                x: x as usize,
+                y: y as usize,
+                z: 0,
+            },
+            color: LighthouseColor::Inline(0, 0, 255),
+        })
         .with_children(|parent| {
             // top left
             if let Some((sprite_index, rotation)) = WallPart::determine_sprite_for_wall_part(

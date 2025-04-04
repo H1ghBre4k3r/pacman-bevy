@@ -17,7 +17,7 @@ pub struct MapPlugin;
 /// Plugin for managing the map load and instantiation of tiles.
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(TileMap::from_string("assets/map.txt"))
+        app.insert_resource(TileMap::from_string("assets/lighthouse.txt"))
             .add_systems(Startup, spawn_tiles);
     }
 }
@@ -32,7 +32,7 @@ fn spawn_tiles(mut commands: Commands, map: Res<TileMap>, ascii: Res<AsciiSheet>
                 Tile::Wall => {
                     spawn_sprites_for_wall(&mut commands, &ascii, &map, x as i32, y as i32);
                 }
-                Tile::Coin => spawn_coin(&mut commands, &ascii, x as i32, y as i32),
+                Tile::Coin => spawn_coin(&mut commands, &ascii, x, y),
                 _ => {
                     continue;
                 }
